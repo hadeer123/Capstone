@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fragment_movie_details_layout_cast_margin_top">65dp</dimen>
+    <dimen name="activity_floating_btn_margin">65</dimen>
+</resources>

@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">SearchMovies</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_saved">Saved</string>
+    <string name="nav_favorites_t">Favorites</string>
+    <string name="nav_to_watch_t">To Watch</string>
+    <string name="nav_popular_t">Popular</string>
+    <string name="nav_now_playing_t">Now Playing</string>
+    <string name="nav_top_rated_t">Top Rated</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+    <string name="action_share">Share</string>
+    <string name="action_imdb">Open IMDB</string>
+    <string name="action_user_reviews">User Reviews</string>
+    <string name="title_activity_movie_details">MovieDetailsActivity</string>
+
+    <string name="no_movies">Oops! No results found.</string>
+    <string name="cast">Cast</string>
+    <string name="placeholder_image">placeholder for image</string>
+    <string name="poster_image">poster image</string>
+    <string name="nintyMin">90 min</string>
+    <string name="released">Released</string>
+    <string name="eight_point_five">8.5</string>
+    <string name="out_of_10">10</string>
+    <string name="ten_thousand">10 000</string>
+    <string name="back_drop_image">back drop image</string>
+    <string name="hold_movie_thumbnail">Hold movie thumbnail</string>
+</resources>
