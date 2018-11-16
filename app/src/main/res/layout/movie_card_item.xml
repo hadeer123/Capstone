@@ -1,93 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
-
-    <android.support.v7.widget.CardView
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_margin="@dimen/card_margin"
+                                    android:elevation="@dimen/card_elevation"
+                                    app:cardCornerRadius="@dimen/card_album_radius">
+    <!--android:foreground="?android:attr/selectableItemBackground"-->
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/card_margin"
-        android:elevation="@dimen/card_elevation"
-        android:foreground="?android:attr/selectableItemBackground"
-        app:cardCornerRadius="@dimen/card_album_radius">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
+            android:id="@+id/rl_movie_thumb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/iv_movie_thumb"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/movie_thumb_height"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/hold_movie_thumbnail"
+                android:scaleType="fitXY"/>
+
+            <ProgressBar
+                android:id="@+id/pb_load_image"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:visibility="visible"/>
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/iv_add_fav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/img_add_fav_thumbnail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/rl_movie_thumb"
+            app:layout_constraintTop_toTopOf="@+id/rl_movie_thumb"
+            app:srcCompat="@mipmap/ic_heart_white_24dp"/>
+
+        <ImageView
+            android:id="@+id/iv_add_to_watch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/to_watch_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/rl_movie_thumb"
+            app:layout_constraintEnd_toEndOf="@+id/rl_movie_thumb"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/rl_movie_thumb"
+            app:layout_constraintTop_toBottomOf="@+id/iv_add_fav"
+            app:layout_constraintVertical_bias="0.922"
+            app:srcCompat="@drawable/ic_add_circle_outline_24dp"/>
+
+
+        <TextView
+            android:id="@+id/tv_movie_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rl_movie_thumb"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingLeft="@dimen/card_content_padding"
+            android:paddingRight="@dimen/card_content_padding"
+            android:paddingTop="@dimen/card_content_padding"
+            android:textAppearance="@style/Body"
+            android:textColor="@color/colorTitle"
+            android:typeface="sans"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rl_movie_thumb"
+            app:layout_constraintVertical_bias="0.094"/>
 
-            <RelativeLayout
-                android:id="@+id/rl_movie_thumb"
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/card_content_padding"
+            android:paddingLeft="@dimen/card_content_padding"
+            android:paddingRight="@dimen/card_content_padding"
+            android:weightSum="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@+id/tv_release_date"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/iv_movie_thumb"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/movie_thumb_height"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:scaleType="fitXY"
-                    android:contentDescription="@string/hold_movie_thumbnail" />
-
-                <ProgressBar
-                    android:id="@+id/pb_load_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_centerInParent="true"
-                    android:visibility="visible" />
-            </RelativeLayout>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.8"
+                android:textAppearance="@style/Body"/>
 
 
             <TextView
-                android:id="@+id/tv_movie_title"
-                android:layout_width="match_parent"
+                android:id="@+id/tv_movie_ratings"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/rl_movie_thumb"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:paddingLeft="@dimen/card_content_padding"
-                android:paddingRight="@dimen/card_content_padding"
-                android:paddingTop="@dimen/card_content_padding"
-                android:textColor="@color/colorTitle"
-                android:textAppearance="@style/Body"
-                android:typeface="sans" />
+                android:layout_gravity="end"
+                android:layout_weight="0.2"
+                android:drawablePadding="5dp"
+                android:drawableStart="@drawable/ic_star_black_24dp"
+                android:gravity="center_vertical"
+                android:textAppearance="@style/Body"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tv_movie_title"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/card_content_padding"
-                android:paddingLeft="@dimen/card_content_padding"
-                android:paddingRight="@dimen/card_content_padding"
-                android:weightSum="1">
+        </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>
 
-                <TextView
-                    android:id="@+id/tv_release_date"
-                    android:textAppearance="@style/Body"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="0.7"
-                     />
-
-
-                <TextView
-                    android:id="@+id/tv_movie_ratings"
-                    android:layout_width="0dp"
-                    android:textAppearance="@style/Body"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_weight="0.3"
-                    android:drawableStart="@drawable/ic_star_black_24dp"
-                    android:drawablePadding="5dp"
-                    android:gravity="center_vertical"
-                     />
-
-            </LinearLayout>
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
-
-</LinearLayout>

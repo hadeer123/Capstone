@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">SearchMovies</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
 
-
+    <!--Navigation menu-->
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="nav_saved">Saved</string>
     <string name="nav_favorites_t">Favorites</string>
@@ -15,12 +15,13 @@
     <string name="nav_now_playing_t">Now Playing</string>
     <string name="nav_top_rated_t">Top Rated</string>
 
+    <!--Actions-->
     <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
     <string name="action_share">Share</string>
     <string name="action_imdb">Open IMDB</string>
     <string name="action_user_reviews">User Reviews</string>
-    <string name="title_activity_movie_details">MovieDetailsActivity</string>
+    <string name="title_activity_movie_details">Details</string>
 
     <string name="no_movies">Oops! No results found.</string>
     <string name="cast">Cast</string>
@@ -33,4 +34,12 @@
     <string name="ten_thousand">10 000</string>
     <string name="back_drop_image">back drop image</string>
     <string name="hold_movie_thumbnail">Hold movie thumbnail</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="connection_error">Connection Error !</string>
+    <string name="title_activity_tabbed">TabbedActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="img_add_fav_thumbnail">thumbnail image</string>
+    <string name="to_watch_icon">To watch icon</string>
 </resources>
