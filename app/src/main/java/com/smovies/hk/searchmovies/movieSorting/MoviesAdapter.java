@@ -1,14 +1,12 @@
 package com.smovies.hk.searchmovies.movieSorting;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,6 +58,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
         holder.tvMovieTitle.setText(movie.getTitle());
         holder.tvMovieRatings.setText(String.valueOf(movie.getRating()));
         holder.tvReleaseDate.setText(movie.getReleaseDate());
+        updateSavedToFav(movie, holder.ivAddFav);
+        updateSavedToWatch(movie, holder.ivAddToWatch);
 
         // loading album cover using Glide library
         Glide.with(movieListFragment)
@@ -90,68 +90,87 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
         holder.ivAddFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isSaved(movie))
-                    saveToFavorites(holder.ivAddFav, movie);
+                if (!isSaved(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_FAV))
+                    saveToDB(holder.ivAddFav, movie, SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV);
                 else
-                    Log.d(TAG, "Already Exists !");
+                    unSave(holder.ivAddFav, movie, SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV);
             }
         });
 
         holder.ivAddToWatch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (!isSaved(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_TO_WATCH))
+                    saveToDB(holder.ivAddFav, movie, SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_WATCH);
+                else
+                    unSave(holder.ivAddFav, movie, SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV);
             }
         });
 
     }
 
-    public boolean isSaved(Movie movie) {
-        int id = movie.getId();
-        String stringId = Integer.toString(id);
-
-        Uri uri = SearchMovieContract.searchMoviesEntry.CONTENT_URI;
-        uri = uri.buildUpon().appendPath(stringId).build();
-
-        Cursor cursor = movieListFragment.getActivity()
-                .getContentResolver().query(uri, null, null, null, null, null);
-        boolean re = cursor.getCount() != 0;
-
-        return re;
+    private void updateSavedToFav(Movie movie, ImageView imageView) {
+        int imgResFav = isSaved(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_FAV) ?
+                R.mipmap.ic_fav_full : R.mipmap.ic_fav_empty;
+        imageView.setImageResource(imgResFav);
     }
 
-    public void unSave(ImageView imageView, Context context, Movie movie) {
-        //TODO change URI based on Table
-        //toSave = true;
-        imageView.setImageResource(R.drawable.ic_favorite_red_24dp);
+    private void updateSavedToWatch(Movie movie, ImageView imageView) {
+        int imgResToWatch = isSaved(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_TO_WATCH) ?
+                R.mipmap.ic_plus_full : R.mipmap.ic_plus_empty;
+        imageView.setImageResource(imgResToWatch);
+    }
+
+    public boolean isSaved(Movie movie, Uri uri) {
         int id = movie.getId();
         String stringId = Integer.toString(id);
+        uri = uri.buildUpon().appendPath(stringId).build();
+        Cursor cursor = movieListFragment.getActivity()
+                .getContentResolver().query(uri, null, null, null, null, null);
+        return cursor.getCount() != 0;
+    }
 
-        Uri uri = SearchMovieContract.searchMoviesEntry.CONTENT_URI;
+    private void unSave(ImageView imageView, Movie movie, String saveIn) {
+        //TODO delete instead of update
+        contentProviderDeleteEntry(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI);
+        updateViewAfterAction(imageView, movie, saveIn);
+    }
+
+    public void contentProviderDeleteEntry(Movie movie, Uri uri) {
+        int id = movie.getId();
+        String stringId = Integer.toString(id);
         uri = uri.buildUpon().appendPath(stringId).build();
         movieListFragment.getActivity().getContentResolver().delete(uri, null, null);
     }
 
-    public void saveToFavorites(ImageView imageView, Movie movie) {
-        // toSave = false ;
+    private void updateViewAfterAction(ImageView imageView, Movie movie, String saveIn) {
+        if (saveIn.equals(SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV))
+            updateSavedToFav(movie, imageView);
+        else
+            updateSavedToWatch(movie, imageView);
+    }
 
-        imageView.setImageResource(R.drawable.ic_favorite_red_24dp);
-
+    public void saveToDB(ImageView imageView, Movie movie, String DBColumn) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_ID, movie.getId());
         contentValues.put(SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_TITLE, movie.getTitle());
-        contentValues.put(SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV, 1);
 
+        contentValues.put(DBColumn, 1);
         Uri path = SearchMovieContract.searchMoviesEntry.CONTENT_URI;
+
         Uri uri = movieListFragment.getActivity()
                 .getContentResolver().insert(path, contentValues);
 
         if (uri != null) {
             Toast.makeText(movieListFragment.getContext(), uri.toString(), Toast.LENGTH_SHORT).show();
+            if (DBColumn.equals(SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV)) {
+                updateSavedToFav(movie, imageView);
+            } else {
+                updateSavedToWatch(movie, imageView);
+            }
+
         }
-
     }
-
 
     @Override
     public int getItemCount() {

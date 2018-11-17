@@ -16,15 +16,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.smovies.hk.searchmovies.movieSorting.MovieListFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.smovies.hk.searchmovies.utils.Constants.FAV_LIST;
 import static com.smovies.hk.searchmovies.utils.Constants.PLAYING_NOW;
 import static com.smovies.hk.searchmovies.utils.Constants.POPULAR;
 import static com.smovies.hk.searchmovies.utils.Constants.TOP_RATED;
+import static com.smovies.hk.searchmovies.utils.Constants.TO_WATCH_LIST;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -122,19 +125,36 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.nav_now_playing:
                 mViewPager.setCurrentItem(PLAYING_NOW);
+                updateTabVisibility();
                 break;
             case R.id.nav_popular:
                 mViewPager.setCurrentItem(POPULAR);
+                updateTabVisibility();
                 break;
             case R.id.nav_toprated:
                 mViewPager.setCurrentItem(TOP_RATED);
+                updateTabVisibility();
+                break;
+            case R.id.nav_favorite:
+                mViewPager.setCurrentItem(FAV_LIST);
+                tabLayout.setVisibility(View.GONE);
+                break;
+            case R.id.nav_to_watch:
+                mViewPager.setCurrentItem(TO_WATCH_LIST);
+                tabLayout.setVisibility(View.GONE);
                 break;
             default:
                 mViewPager.setCurrentItem(PLAYING_NOW);
+                updateTabVisibility();
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void updateTabVisibility() {
+        if (tabLayout.getVisibility() == View.GONE)
+            tabLayout.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -151,13 +171,13 @@ public class MainActivity extends AppCompatActivity
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return MovieListFragment.newInstance(position + 1);
+            return MovieListFragment.newInstance(position);
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            // Show 5 total pages.
+            return 5;
         }
 
         @Override

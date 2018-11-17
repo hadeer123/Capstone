@@ -40,8 +40,8 @@
 
         <ImageView
             android:id="@+id/iv_add_fav"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
@@ -57,8 +57,8 @@
 
         <ImageView
             android:id="@+id/iv_add_to_watch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_marginBottom="8dp"
@@ -134,6 +134,7 @@
                 android:textAppearance="@style/Body"/>
 
         </LinearLayout>
+
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
 

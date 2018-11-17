@@ -1,5 +1,7 @@
 package com.smovies.hk.searchmovies.movieSorting;
 
+import android.content.Context;
+
 import com.smovies.hk.searchmovies.model.Movie;
 
 import java.util.List;
@@ -36,6 +38,14 @@ public class MovieListViewer implements MovieListContract.Presenter, MovieListCo
             movieListView.showProgress();
         }
         movieListModel.getMovieList(this, 1, tabNumber);
+    }
+
+    @Override
+    public void requestDataFromDB(int tabNumber, Context mContext) {
+        if (movieListView != null) {
+            movieListView.showProgress();
+        }
+        movieListModel.getMovieListFromDB(this, tabNumber, mContext);
     }
 
     @Override

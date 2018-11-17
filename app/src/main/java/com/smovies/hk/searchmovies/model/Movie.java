@@ -49,6 +49,19 @@ public class Movie {
         this.homepage = homepage;
     }
 
+    public Movie(int id, String title, String releaseDate, float rating, String thumbPath, String overview, String backdropPath, String runTime, String tagline, String homepage) {
+        this.id = id;
+        this.title = title;
+        this.releaseDate = releaseDate;
+        this.rating = rating;
+        this.thumbPath = thumbPath;
+        this.overview = overview;
+        this.backdropPath = backdropPath;
+        this.runTime = runTime;
+        this.tagline = tagline;
+        this.homepage = homepage;
+    }
+
     public int getId() {
         return id;
     }

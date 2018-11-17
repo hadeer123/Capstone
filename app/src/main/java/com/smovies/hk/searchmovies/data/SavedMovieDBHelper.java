@@ -20,6 +20,15 @@ public class SavedMovieDBHelper extends SQLiteOpenHelper {
                 SearchMovieContract.searchMoviesEntry._ID + " INTEGER PRIMARY KEY, " +
                 SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL, " +
                 SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_TITLE + " TEXT NOT NULL," +
+                SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_RELEASE_DATE + " TEXT NOT NULL," +
+                SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_RATING + " FLOAT NOT NULL," +
+                SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_THUMB_PATH + " TEXT NOT NULL," +
+                SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_OVERVIEW + " TEXT NOT NULL," +
+                SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_BACKDROP_PATH + " TEXT NOT NULL," +
+                SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_CREDITS + " TEXT NOT NULL," +
+                SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_RUNTIME + " TEXT NOT NULL," +
+                SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_TAGLINE + " TEXT NOT NULL," +
+                SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_HOMEPAGE + " TEXT NOT NULL," +
                 SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV + " BOOLEAN NOT NULL DEFAULT 0,"+
                 SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_WATCH + " BOOLEAN NOT NULL DEFAULT 0 );";
         db.execSQL(CREATE_TABLE);
@@ -27,6 +36,7 @@ public class SavedMovieDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        //TODO do something here ??
         db.execSQL("DROP TABLE IF EXISTS " + SearchMovieContract.searchMoviesEntry.TABLE_NAME);
     }
 

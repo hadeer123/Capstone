@@ -1,7 +1,6 @@
 package com.smovies.hk.searchmovies.movieSorting;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -37,21 +36,24 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
 
     private static final String TAG = MovieListFragment.class.getSimpleName();
     private static final String ARG_SECTION_NUMBER = "section_number";
+
     int firstVisibleItem, visibleItemCount, totalItemCount;
     @BindView(R.id.rv_movie_list) RecyclerView rvMovieList;
     @BindView(R.id.pb_loading) ProgressBar pbLoading;
     @BindView(R.id.tv_empty_view) TextView tvEmptyView;
-    private OnFragmentInteractionListener mListener;
+
     private MovieListViewer movieListViewer;
     private List<Movie> moviesList;
     private MoviesAdapter moviesAdapter;
     private int pageNo = 1;
+
     //Constants for continuous Scroll
     private int previousTotal = 0;
     private boolean loading = true;
     private int visibleThreshold = 5;
     private GridLayoutManager mLayoutManager;
     private int tabNumber;
+    private String dBQuery = null;
 
     public MovieListFragment() {
         // Required empty public constructor
@@ -60,11 +62,10 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
     public static MovieListFragment newInstance(int sectionNumber) {
         MovieListFragment fragment = new MovieListFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber - 1);
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
         return fragment;
     }
-
 
     private void initUI() {
         moviesList = new ArrayList<>();
@@ -121,6 +122,7 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
         }
     }
 
+
     @Override
     public void showProgress() {
         pbLoading.setVisibility(View.VISIBLE);
@@ -137,7 +139,11 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
         moviesList.addAll(movieArrayList);
         moviesAdapter.notifyDataSetChanged();
 
-        pageNo++;
+        //only do that if on the first three tabs
+        if (tabNumber < 3) {
+            pageNo++;
+        }
+
     }
 
     @Override
@@ -187,54 +193,16 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_movie_list, container, false);
         ButterKnife.bind(this, rootView);
-
         initUI();
         setListeners();
-
-
         movieListViewer = new MovieListViewer(this);
-        movieListViewer.requestDataFromServer(tabNumber);
-
+        if (tabNumber < 3) {
+            //retrofit pulling from internet
+            movieListViewer.requestDataFromServer(tabNumber);
+        } else {
+            movieListViewer.requestDataFromDB(tabNumber, getContext());
+        }
         return rootView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI eventgetString(R.string.tab_number_args)
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }OnFragmentInteractionListener
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }
