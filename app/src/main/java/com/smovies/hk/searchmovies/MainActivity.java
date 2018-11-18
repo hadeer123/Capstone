@@ -79,11 +79,41 @@ public class MainActivity extends AppCompatActivity
         // Set up the ViewPager with the sections adapter.
         mViewPager.setAdapter(mSectionsPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                switch (i) {
+                    case FAV_LIST:
+                        setTitle(getString(R.string.nav_favorites_t));
+                        break;
+                    case TO_WATCH_LIST:
+                        setTitle(getString(R.string.nav_to_watch_t));
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
 
         //set icons in tab layout
         tabLayout.getTabAt(PLAYING_NOW).setIcon(R.drawable.ic_menu_slideshow);
         tabLayout.getTabAt(POPULAR).setIcon(R.drawable.ic_whatshot_black_24dp);
         tabLayout.getTabAt(TOP_RATED).setIcon(R.drawable.ic_top_rated_yellow_24dp);
+
+        //remove last two tabs (Favorites & TO Watch)
+        tabLayout.removeTabAt(tabLayout.getTabCount() - 1);
+        tabLayout.removeTabAt(tabLayout.getTabCount() - 1);
+
     }
 
     @Override
@@ -138,10 +168,12 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_favorite:
                 mViewPager.setCurrentItem(FAV_LIST);
                 tabLayout.setVisibility(View.GONE);
+                navigationView.setCheckedItem(R.id.nav_favorite);
                 break;
             case R.id.nav_to_watch:
                 mViewPager.setCurrentItem(TO_WATCH_LIST);
                 tabLayout.setVisibility(View.GONE);
+                navigationView.setCheckedItem(R.id.nav_to_watch);
                 break;
             default:
                 mViewPager.setCurrentItem(PLAYING_NOW);
@@ -171,13 +203,28 @@ public class MainActivity extends AppCompatActivity
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
+            updateVisibility(position);
+
             return MovieListFragment.newInstance(position);
+        }
+
+        public void updateVisibility(int position) {
+            if (position > 3) {
+                tabLayout.setVisibility(View.GONE);
+            } else {
+                updateTabVisibility();
+            }
         }
 
         @Override
         public int getCount() {
             // Show 5 total pages.
             return 5;
+        }
+
+        @Override
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
         }
 
         @Override

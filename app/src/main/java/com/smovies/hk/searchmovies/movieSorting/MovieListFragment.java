@@ -1,5 +1,6 @@
 package com.smovies.hk.searchmovies.movieSorting;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,7 +28,9 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.smovies.hk.searchmovies.utils.Constants.FAV_LIST;
 import static com.smovies.hk.searchmovies.utils.Constants.KEY_MOVIE_ID;
+import static com.smovies.hk.searchmovies.utils.Constants.TO_WATCH_LIST;
 import static com.smovies.hk.searchmovies.utils.GridSpacingItemDecoration.dpToPx;
 
 
@@ -59,6 +62,21 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
         // Required empty public constructor
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        switch (tabNumber) {
+            case FAV_LIST:
+                getActivity().setTitle(getString(R.string.nav_favorites_t));
+                break;
+            case TO_WATCH_LIST:
+                getActivity().setTitle(getString(R.string.nav_to_watch_t));
+                break;
+            default:
+                break;
+        }
+    }
+
     public static MovieListFragment newInstance(int sectionNumber) {
         MovieListFragment fragment = new MovieListFragment();
         Bundle args = new Bundle();
@@ -70,7 +88,6 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
     private void initUI() {
         moviesList = new ArrayList<>();
         moviesAdapter = new MoviesAdapter(this, moviesList);
-
         GridSetup();
     }
 
