@@ -16,9 +16,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.smovies.hk.searchmovies.MovieDetailsActivity;
 import com.smovies.hk.searchmovies.R;
 import com.smovies.hk.searchmovies.model.Movie;
+import com.smovies.hk.searchmovies.movieDetail.MovieDetailsActivity;
 import com.smovies.hk.searchmovies.utils.GridSpacingItemDecoration;
 
 import java.util.ArrayList;
@@ -181,12 +181,13 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
         if (position == -1) {
             return;
         }
-        // openMovieDetails();
+        openMovieDetails(position);
     }
 
-    private void openMovieDetails() {
+    private void openMovieDetails(int position) {
         Intent detailIntent = new Intent(getActivity(), MovieDetailsActivity.class);
-        detailIntent.putExtra(KEY_MOVIE_ID, moviesList.get(tabNumber).getId());
+        int movieID = moviesList.get(position).getId();
+        detailIntent.putExtra(KEY_MOVIE_ID, movieID);
         startActivity(detailIntent);
     }
 

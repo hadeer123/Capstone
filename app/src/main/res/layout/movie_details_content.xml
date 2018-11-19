@@ -7,25 +7,10 @@
                                             android:background="@color/colorViewBg"
                                             android:scrollbars="none"
                                             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                                            tools:context=".MovieDetailsActivity"
+                                            tools:context=".movieDetail.MovieDetailsActivity"
                                             tools:showIn="@layout/activity_movie_details">
 
-
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
     <!-- Card for Movie info -->
-    <include layout="@layout/layout_movie_info"/>
-
-    <!-- Card for Movie Description -->
-    <include layout="@layout/movie_description"/>
-
-    <!--Cast cardview -->
-    <include layout="@layout/movie_cast_cardview"/>
-
+    <include layout="@layout/content_movie_details"/>
     <!--Movie details Trailers -->
-
-</LinearLayout>
 </android.support.v4.widget.NestedScrollView>

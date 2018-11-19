@@ -23,14 +23,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MovieDetailsActivity"
+            android:name=".movieDetail.MovieDetailsActivity"
             android:label="@string/title_activity_movie_details"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <provider
-            android:name="com.smovies.hk.searchmovies.data.SearchMovieDBProvider"
+            android:name=".data.SearchMovieDBProvider"
             android:authorities="com.smovies.hk.searchmovies.provider"
             android:exported="false"/>
+
     </application>
+
 </manifest>

@@ -29,7 +29,6 @@
 
     <!-- activity_detail -->
     <dimen name="activity_detail_image_view_backdrop_height">400dp</dimen>
-    <dimen name="activity_detail_btn_fav_margin">24dp</dimen>
     <dimen name="activity_detail_nested_scroll_view_margin_top">45dp</dimen>
 
     <!-- fragment_movie_details -->
