@@ -3,7 +3,6 @@ package com.smovies.hk.searchmovies.model;
 import com.google.gson.annotations.SerializedName;
 
 public class Movie {
-
     private int id;
 
     private String title;

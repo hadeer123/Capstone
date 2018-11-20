@@ -1,6 +1,5 @@
 package com.smovies.hk.searchmovies.movieDetail;
 
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,11 +7,13 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -34,36 +35,41 @@ import butterknife.ButterKnife;
 
 import static com.smovies.hk.searchmovies.utils.Constants.KEY_MOVIE_ID;
 
-
 public class MovieDetailsActivity extends AppCompatActivity implements MovieDetailContract.View {
 
-    @BindView(R.id.iv_backdrop) ImageView ivBackdrop;
     @BindView(R.id.image_view_poster) ImageView ivPoster;
-    @BindView(R.id.pb_load_backdrop) ProgressBar pbLoadBackdrop;
-    @BindView(R.id.tv_movie_title) TextView tvMovieTitle;
-    @BindView(R.id.movie_description) TextView tvMovieDescription;
+    @BindView(R.id.progress_bar_cast) ProgressBar pbLoadCast;
+    @BindView(R.id.text_view_movie_plot) TextView tvMovieDescription;
     @BindView(R.id.text_view_movie_title) TextView tvMovieTitleSub;
-    @BindView(R.id.text_view_movie_releaseDate) TextView tvMovieReleaseDate;
+    @BindView(R.id.text_view_movie_release_date) TextView tvMovieReleaseDate;
     @BindView(R.id.text_view_rating) TextView tvMovieRatings;
     @BindView(R.id.text_view_movie_runtime) TextView tvRuntimeValue;
-    @BindView(R.id.pb_cast_loading) ProgressBar pbLoadCast;
+    @BindView(R.id.text_view_rating_out_of) TextView tvRatingOutOf;
+    @BindView(R.id.text_view_rating_num) TextView tvRatingNum;
+    @BindView(R.id.rating_bar) RatingBar ratingBar;
+    @BindView(R.id.recycler_view_cast) RecyclerView rvCast;
+    @BindView(R.id.text_view_error_message) TextView tvErrorMsg;
+
+    @BindView(R.id.iv_backdrop) ImageView ivBackdrop;
+    @BindView(R.id.movie_title_tv) TextView tvMovieTitle;
+    @BindView(R.id.pb_load_backdrop) ProgressBar pbLoadBackdrop;
     @BindView(R.id.main_content) View viewCoordinator;
     @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbar;
     @BindView(R.id.appbar) AppBarLayout appBarLayout;
+    @BindView(R.id.toolbar) Toolbar toolbar;
 
-    // @BindView(R.id.tv_movie_overview) TextView tvOverview;
     private CastAdapter castAdapter;
+    private MovieDetailViewer movieDetailsPresenter;
     private List<Cast> castList;
-//  private @BindView(R.id.tv_homepage_value) TextView tvHomepageValue;
-//  private @BindView(R.id.tv_tagline_value) TextView tvTaglineValue;
 
-//  @BindView(R.id.btn_fav) FloatingActionButton favBtn;
-//  @BindView(R.id.btn_toWatchList) FloatingActionButton toWatchBtn;
 
+    // private static MovieDetailsFragment movieDetailsFragment;
+
+
+    //@BindView(R.id.layout_movie_detail) ConstraintLayout mainContentLayout;
 
     private String movieName;
 
-    private MovieDetailViewer movieDetailsPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,32 +78,33 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
 
         ButterKnife.bind(this);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
         initCollapsingToolbar();
 
+//        MovieDetailsFragment movieDetailsFragment= MovieDetailsFragment.newInstance(
+//                getIntent().getIntExtra(KEY_MOVIE_ID, 0));
+
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.movie_details_nested_layout, movieDetailsFragment)
+//                .commit();
+//
         initUI();
-
-        Intent mIntent = getIntent();
-        int movieId = mIntent.getIntExtra(KEY_MOVIE_ID, 0);
-
-        movieDetailsPresenter = new MovieDetailViewer(this);
-        movieDetailsPresenter.requestMovieData(movieId);
-
     }
 
-    /**
-     * Initializing UI components
-     */
     private void initUI() {
         castList = new ArrayList<>();
-        RecyclerView rvCast = findViewById(R.id.rv_cast);
         castAdapter = new CastAdapter(this, castList);
+
+        LinearLayoutManager mCastLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        rvCast.setLayoutManager(mCastLayoutManager);
         rvCast.setAdapter(castAdapter);
+
+        movieDetailsPresenter = new MovieDetailViewer(this);
+        movieDetailsPresenter.requestMovieData(getIntent().getIntExtra(KEY_MOVIE_ID, 0));
     }
+
 
     /**
      * Initializing collapsing toolbar
@@ -132,44 +139,29 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     @Override
     public void showProgress() {
         pbLoadBackdrop.setVisibility(View.VISIBLE);
+        pbLoadCast.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
+        pbLoadBackdrop.setVisibility(View.GONE);
         pbLoadCast.setVisibility(View.GONE);
     }
 
     @Override
     public void setDataToViews(Movie movie) {
-
         if (movie != null) {
-
             movieName = movie.getTitle();
+            tvMovieTitle.setText(movieName);
 
-            tvMovieTitle.setText(movie.getTitle());
             tvMovieTitleSub.setText(movie.getTitle());
             tvMovieReleaseDate.setText(movie.getReleaseDate());
             tvMovieRatings.setText(String.valueOf(movie.getRating()));
-            tvRuntimeValue.setText(movie.getRunTime());
+            tvRuntimeValue.setText(movie.getRunTime() + getString(R.string.minutes));
             tvMovieDescription.setText(movie.getOverview());
+            ratingBar.setRating(movie.getRating());
 
-            Glide.with(this)
-                    .load(ApiClient.POSTER_BASE_URL + movie.getThumbPath())
-                    .listener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            return false;
-                        }
 
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            return false;
-                        }
-                    })
-                    .apply(new RequestOptions().placeholder(R.drawable.ic_empty_movies).error(R.drawable.ic_empty_movies))
-                    .into(ivPoster);
-
-            // loading album cover using Glide library
             Glide.with(this)
                     .load(ApiClient.BACKDROP_BASE_URL + movie.getBackdropPath())
                     .listener(new RequestListener<Drawable>() {
@@ -188,13 +180,26 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
                     .apply(new RequestOptions().placeholder(R.drawable.ic_empty_movies).error(R.drawable.ic_empty_movies))
                     .into(ivBackdrop);
 
+            Glide.with(this)
+                    .load(ApiClient.POSTER_BASE_URL + movie.getThumbPath())
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            return false;
+                        }
+                    })
+                    .apply(new RequestOptions().placeholder(R.drawable.ic_empty_movies).error(R.drawable.ic_empty_movies))
+                    .into(ivPoster);
+
+
             castList.clear();
             castList.addAll(movie.getCredits().getCast());
             castAdapter.notifyDataSetChanged();
-
-//            tvTaglineValue.setText(movie.getTagline() != null ? movie.getTagline() : "N/A");
-//            tvHomepageValue.setText(movie.getHomepage() != null ? movie.getHomepage() : "N/A");
-//            tvRuntimeValue.setText(movie.getRunTime() != null ? movie.getRunTime() : "N/A");
         }
 
     }
@@ -202,6 +207,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     @Override
     public void onResponseFailure(Throwable throwable) {
         Snackbar.make(viewCoordinator, getString(R.string.error_data), Snackbar.LENGTH_LONG).show();
+        tvErrorMsg.setVisibility(View.VISIBLE);
+
     }
 
     @Override
@@ -215,5 +222,4 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
         super.onDestroy();
         movieDetailsPresenter.onDestroy();
     }
-
 }

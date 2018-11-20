@@ -61,7 +61,7 @@
     <dimen name="layout_rating_text_view_out_of_margin_left">4dp</dimen>
     <dimen name="layout_rating_text_view_num_margin_left">8dp</dimen>
 
-    <!-- layout_movie_content -->
+    <!-- layout_movie_description -->
     <dimen name="layout_movie_content_text_view_title_margin_top">20dp</dimen>
     <dimen name="layout_movie_content_text_view_margin_top">7dp</dimen>
     <dimen name="layout_movie_content_flow_layout_margin_top">7dp</dimen>

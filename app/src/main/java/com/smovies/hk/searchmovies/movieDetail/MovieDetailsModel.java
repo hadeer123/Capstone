@@ -10,11 +10,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.smovies.hk.searchmovies.network.ApiClient.API_KEY;
+import static com.smovies.hk.searchmovies.network.ApiClient.API_MOVIE_DB;
 import static com.smovies.hk.searchmovies.utils.Constants.CREDITS;
 
 public class MovieDetailsModel implements MovieDetailContract.Model {
     private final String TAG = MovieDetailsModel.class.getSimpleName();
+
 
     @Override
     public void getMovieDetails(final OnFinishedListener onFinishedListener, int movieId) {
@@ -22,7 +23,8 @@ public class MovieDetailsModel implements MovieDetailContract.Model {
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
-        Call<Movie> call = apiService.getMovieDetails(movieId, API_KEY, CREDITS);
+        Call<Movie> call = apiService.getMovieDetails(movieId, API_MOVIE_DB, CREDITS);
+
         call.enqueue(new Callback<Movie>() {
             @Override
             public void onResponse(Call<Movie> call, Response<Movie> response) {

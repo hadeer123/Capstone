@@ -46,7 +46,7 @@
                     android:visibility="visible"/>
 
                 <TextView
-                    android:id="@+id/tv_movie_title"
+                    android:id="@+id/movie_title_tv"
                     android:textAppearance="@style/Title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -68,40 +68,19 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/movie_details_content"/>
+    <include
+        layout="@layout/movie_details_content"/>
+
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/btn_fav"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@id/appbar"
+        app:rippleColor="@color/colorPrimary"
+        app:srcCompat="@drawable/ic_favorite_border_white_24dp"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@android:drawable/ic_dialog_email"/>
-
-    <!--<android.support.design.widget.FloatingActionButton-->
-    <!--android:id="@+id/btn_fav"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_margin="16dp"-->
-    <!--android:src="@drawable/ic_favorite_red_24dp"-->
-    <!--android:visibility="visible"-->
-    <!--app:backgroundTint="@android:color/background_light"-->
-    <!--app:layout_anchor="@+id/appbar"-->
-    <!--app:layout_anchorGravity="right|bottom"-->
-    <!--app:rippleColor="@color/colorPrimary"/>-->
-
-    <!--<android.support.design.widget.FloatingActionButton-->
-    <!--android:id="@+id/btn_toWatchList"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_margin="@dimen/activity_floating_btn_margin"-->
-    <!--android:src="@drawable/ic_playlist_add_black_24dp"-->
-    <!--android:visibility="visible"-->
-    <!--app:backgroundTint="@android:color/background_light"-->
-    <!--app:layout_anchorGravity="center_vertical|start"-->
-    <!--app:rippleColor="@color/colorPrimary"/>-->
-    <!--app:layout_anchor="@id/btn_fav"-->
-
+        />
 
 </android.support.design.widget.CoordinatorLayout>

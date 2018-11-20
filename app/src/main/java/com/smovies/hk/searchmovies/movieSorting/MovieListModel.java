@@ -24,7 +24,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.smovies.hk.searchmovies.network.ApiClient.API_KEY;
+import static com.smovies.hk.searchmovies.network.ApiClient.API_MOVIE_DB;
 import static com.smovies.hk.searchmovies.utils.Constants.FAV_LIST;
 import static com.smovies.hk.searchmovies.utils.Constants.PLAYING_NOW;
 import static com.smovies.hk.searchmovies.utils.Constants.POPULAR;
@@ -151,15 +151,15 @@ public class MovieListModel implements MovieListContract.Model {
         switch (tabNumber) {
             case PLAYING_NOW:
                 call =
-                        apiService.getNowPlayingMoviesList(API_KEY, pageNo);
+                        apiService.getNowPlayingMoviesList(API_MOVIE_DB, pageNo);
                 break;
             case POPULAR:
                 call =
-                        apiService.getPopularMoviesList(API_KEY, pageNo);
+                        apiService.getPopularMoviesList(API_MOVIE_DB, pageNo);
                 break;
             case TOP_RATED:
                 call =
-                        apiService.getTopRatedMoviesList(API_KEY, pageNo);
+                        apiService.getTopRatedMoviesList(API_MOVIE_DB, pageNo);
                 break;
             default:
                 break;

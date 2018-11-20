@@ -25,6 +25,7 @@ public class MovieDetailViewer implements MovieDetailContract.Presenter, MovieDe
         movieDetailsModel.getMovieDetails(this, movieId);
     }
 
+
     @Override
     public void onFinished(Movie movie) {
 
