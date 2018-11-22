@@ -47,7 +47,6 @@
 
                 <TextView
                     android:id="@+id/movie_title_tv"
-                    android:textAppearance="@style/Title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/iv_backdrop"
@@ -55,6 +54,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:padding="5dp"
+                    android:textAppearance="@style/Title"
                     android:textColor="@android:color/white"/>
             </RelativeLayout>
 
@@ -78,9 +78,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@id/appbar"
+        app:layout_anchorGravity="bottom|end"
         app:rippleColor="@color/colorPrimary"
         app:srcCompat="@drawable/ic_favorite_border_white_24dp"
-        app:layout_anchorGravity="bottom|end"
         />
 
 </android.support.design.widget.CoordinatorLayout>

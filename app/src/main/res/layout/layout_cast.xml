@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/layout_cast"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    android:id="@+id/layout_cast"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/text_view_cast_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:text="@string/cast"
-            android:textAppearance="@style/SubHeading" />
+    <TextView
+        android:id="@+id/text_view_cast_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="@string/cast"
+        android:textAppearance="@style/SubHeading"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_cast"
@@ -23,11 +23,11 @@
         android:visibility="visible"
         tools:listitem="@layout/item_film_cast"/>
 
-        <ProgressBar
-            android:id="@+id/progress_bar_cast"
-            android:layout_width="@dimen/progress_bar_size"
-            android:layout_height="@dimen/progress_bar_size"
-            android:layout_below="@+id/text_view_cast_title"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/layout_cast_progress_bar_cast_margin_top" />
-    </RelativeLayout>
+    <ProgressBar
+        android:id="@+id/progress_bar_cast"
+        android:layout_width="@dimen/progress_bar_size"
+        android:layout_height="@dimen/progress_bar_size"
+        android:layout_below="@+id/text_view_cast_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/layout_cast_progress_bar_cast_margin_top"/>
+</RelativeLayout>
