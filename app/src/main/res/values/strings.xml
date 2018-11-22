@@ -21,6 +21,7 @@
     <string name="action_share">Share</string>
     <string name="action_imdb">Open IMDB</string>
     <string name="action_user_reviews">User Reviews</string>
+    <string name="action_bookmark">Bookmark</string>
     <string name="title_activity_movie_details">Details</string>
 
     <string name="no_movies">Oops! No results found.</string>

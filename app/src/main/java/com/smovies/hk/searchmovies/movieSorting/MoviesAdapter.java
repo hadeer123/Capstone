@@ -91,7 +91,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
             @Override
             public void onClick(View v) {
                 if (!isSaved(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_FAV))
-                    saveToDB(holder.ivAddFav, movie, SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV);
+                    saveToDB(holder.ivAddFav, movie
+                            , SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV
+                            , SearchMovieContract.searchMoviesEntry.CONTENT_URI_FAV);
                 else
                     unSave(holder.ivAddFav, movie, SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV);
             }
@@ -101,24 +103,14 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
             @Override
             public void onClick(View v) {
                 if (!isSaved(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_TO_WATCH))
-                    saveToDB(holder.ivAddFav, movie, SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_WATCH);
+                    saveToDB(holder.ivAddFav, movie
+                            , SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_WATCH
+                            , SearchMovieContract.searchMoviesEntry.CONTENT_URI_TO_WATCH);
                 else
                     unSave(holder.ivAddFav, movie, SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV);
             }
         });
 
-    }
-
-    private void updateSavedToFav(Movie movie, ImageView imageView) {
-        int imgResFav = isSaved(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_FAV) ?
-                R.mipmap.ic_fav_full : R.mipmap.ic_fav_empty;
-        imageView.setImageResource(imgResFav);
-    }
-
-    private void updateSavedToWatch(Movie movie, ImageView imageView) {
-        int imgResToWatch = isSaved(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_TO_WATCH) ?
-                R.mipmap.ic_plus_full : R.mipmap.ic_plus_empty;
-        imageView.setImageResource(imgResToWatch);
     }
 
     public boolean isSaved(Movie movie, Uri uri) {
@@ -150,14 +142,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
             updateSavedToWatch(movie, imageView);
     }
 
-    public void saveToDB(ImageView imageView, Movie movie, String DBColumn) {
+    public void saveToDB(ImageView imageView, Movie movie, String DBColumn, Uri path) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_ID, movie.getId());
         contentValues.put(SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_TITLE, movie.getTitle());
 
         contentValues.put(DBColumn, 1);
-        Uri path = SearchMovieContract.searchMoviesEntry.CONTENT_URI;
-
         Uri uri = movieListFragment.getActivity()
                 .getContentResolver().insert(path, contentValues);
 
@@ -170,6 +160,19 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
             }
 
         }
+    }
+
+    private void updateSavedToFav(Movie movie, ImageView imageView) {
+        int imgResFav = isSaved(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_FAV) ?
+                R.mipmap.ic_fav_full : R.mipmap.ic_fav_empty;
+        imageView.setImageResource(imgResFav);
+    }
+
+
+    private void updateSavedToWatch(Movie movie, ImageView imageView) {
+        int imgResToWatch = isSaved(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_TO_WATCH) ?
+                R.mipmap.ic_plus_full : R.mipmap.ic_plus_empty;
+        imageView.setImageResource(imgResToWatch);
     }
 
     @Override
