@@ -151,7 +151,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     public void hideProgress() {
         pbLoadBackdrop.setVisibility(View.GONE);
         pbLoadCast.setVisibility(View.GONE);
-        rvCast.setVisibility(View.GONE);
 
         if(trailersFragment != null)
             trailersFragment.hideProgress();
@@ -208,8 +207,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
 
             updateCastView(movie);
 
-//            if(trailersFragment != null)
-//                 trailersFragment.setDataToViews(movie);
+            if(trailersFragment != null)
+                 trailersFragment.setDataToViews(movie);
 
         }
 
@@ -250,7 +249,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
 
     @Override
     public void sendFragmentInstance(TrailersFragment fragment) {
-//        this.trailersFragment = fragment;
+        this.trailersFragment = fragment;
     }
 
     @Override

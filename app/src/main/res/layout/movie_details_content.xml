@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView android:id="@+id/movie_details_nested_layout"
+                                            xmlns:android="http://schemas.android.com/apk/res/android"
                                             xmlns:app="http://schemas.android.com/apk/res-auto"
                                             xmlns:tools="http://schemas.android.com/tools"
-                                            android:id="@+id/movie_details_nested_layout"
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
                                             android:background="@color/colorViewBg"
@@ -14,6 +14,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_movie_detail"
             android:layout_width="match_parent"
@@ -54,18 +55,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/layout_content"/>
 
-            <!--<fragment-->
-                <!--android:id="@+id/fragment"-->
-                <!--android:name="com.smovies.hk.searchmovies.movieDetail.TrailersFragment"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="8dp"-->
-                <!--android:clipToPadding="false"-->
-                <!--app:layout_constraintEnd_toEndOf="parent"-->
-                <!--app:layout_constraintLeft_toLeftOf="parent"-->
-                <!--app:layout_constraintRight_toRightOf="parent"-->
-                <!--app:layout_constraintStart_toStartOf="parent"-->
-                <!--app:layout_constraintTop_toBottomOf="@+id/layout_cast"/>-->
+            <fragment
+                android:id="@+id/fragment"
+                android:name="com.smovies.hk.searchmovies.movieDetail.TrailersFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:clipToPadding="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_cast"/>
 
         </android.support.constraint.ConstraintLayout>
 
