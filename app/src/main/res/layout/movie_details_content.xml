@@ -13,9 +13,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".movieDetail.MovieDetailsFragment">
-
+        android:layout_height="match_parent">
         <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_movie_detail"
             android:layout_width="match_parent"
@@ -47,7 +45,7 @@
             <include
                 android:id="@+id/layout_cast"
                 layout="@layout/layout_cast"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -55,6 +53,19 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/layout_content"/>
+
+            <!--<fragment-->
+                <!--android:id="@+id/fragment"-->
+                <!--android:name="com.smovies.hk.searchmovies.movieDetail.TrailersFragment"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:clipToPadding="false"-->
+                <!--app:layout_constraintEnd_toEndOf="parent"-->
+                <!--app:layout_constraintLeft_toLeftOf="parent"-->
+                <!--app:layout_constraintRight_toRightOf="parent"-->
+                <!--app:layout_constraintStart_toStartOf="parent"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/layout_cast"/>-->
 
         </android.support.constraint.ConstraintLayout>
 

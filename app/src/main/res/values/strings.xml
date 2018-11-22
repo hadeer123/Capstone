@@ -50,4 +50,6 @@
     <string name="plot">Description</string>
     <string name="lorem_ipsum">lorem ipsum</string>
     <string name="movie_id_args">movieID</string>
+    <string name="no_trailers_error_message">No trailers found.</string>
+    <string name="trailers_text_view">Trailers</string>
 </resources>

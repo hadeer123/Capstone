@@ -1,6 +1,10 @@
 package com.smovies.hk.searchmovies.movieDetail;
 
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -10,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -25,17 +30,24 @@ import com.bumptech.glide.request.target.Target;
 import com.smovies.hk.searchmovies.R;
 import com.smovies.hk.searchmovies.model.Cast;
 import com.smovies.hk.searchmovies.model.Movie;
+import com.smovies.hk.searchmovies.model.Video;
 import com.smovies.hk.searchmovies.network.ApiClient;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.service.notification.Condition.SCHEME;
 import static com.smovies.hk.searchmovies.utils.Constants.KEY_MOVIE_ID;
+import static com.smovies.hk.searchmovies.utils.Constants.YOUTUBE_BASE_PATH;
+import static com.smovies.hk.searchmovies.utils.Constants.YOUTUBE_WATCH_PATH;
 
-public class MovieDetailsActivity extends AppCompatActivity implements MovieDetailContract.View {
+public class MovieDetailsActivity extends AppCompatActivity implements MovieDetailContract.View, TrailersFragment.OnFragmentInteractionListener{
+    private static final String TAG = MovieDetailsActivity.class.getSimpleName();
 
     @BindView(R.id.image_view_poster) ImageView ivPoster;
     @BindView(R.id.progress_bar_cast) ProgressBar pbLoadCast;
@@ -60,10 +72,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
 
     private CastAdapter castAdapter;
     private MovieDetailViewer movieDetailsPresenter;
+    private TrailersFragment trailersFragment;
     private List<Cast> castList;
-
-
-    // private static MovieDetailsFragment movieDetailsFragment;
 
 
     //@BindView(R.id.layout_movie_detail) ConstraintLayout mainContentLayout;
@@ -82,14 +92,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         initCollapsingToolbar();
-
-//        MovieDetailsFragment movieDetailsFragment= MovieDetailsFragment.newInstance(
-//                getIntent().getIntExtra(KEY_MOVIE_ID, 0));
-
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.movie_details_nested_layout, movieDetailsFragment)
-//                .commit();
-//
         initUI();
     }
 
@@ -140,12 +142,19 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     public void showProgress() {
         pbLoadBackdrop.setVisibility(View.VISIBLE);
         pbLoadCast.setVisibility(View.VISIBLE);
+
+        if(trailersFragment != null)
+            trailersFragment.showProgress();
     }
 
     @Override
     public void hideProgress() {
         pbLoadBackdrop.setVisibility(View.GONE);
         pbLoadCast.setVisibility(View.GONE);
+        rvCast.setVisibility(View.GONE);
+
+        if(trailersFragment != null)
+            trailersFragment.hideProgress();
     }
 
     @Override
@@ -197,17 +206,28 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
                     .into(ivPoster);
 
 
-            castList.clear();
-            castList.addAll(movie.getCredits().getCast());
-            castAdapter.notifyDataSetChanged();
+            updateCastView(movie);
+
+//            if(trailersFragment != null)
+//                 trailersFragment.setDataToViews(movie);
+
         }
 
+    }
+
+    public void updateCastView(Movie movie) {
+        castList.clear();
+        castList.addAll(movie.getCredits().getCast());
+        castAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onResponseFailure(Throwable throwable) {
         Snackbar.make(viewCoordinator, getString(R.string.error_data), Snackbar.LENGTH_LONG).show();
         tvErrorMsg.setVisibility(View.VISIBLE);
+
+        if(trailersFragment != null)
+            trailersFragment.onResponseFailure(throwable);
 
     }
 
@@ -221,5 +241,52 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     protected void onDestroy() {
         super.onDestroy();
         movieDetailsPresenter.onDestroy();
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void sendFragmentInstance(TrailersFragment fragment) {
+//        this.trailersFragment = fragment;
+    }
+
+    @Override
+    public void onVideoAdapterItemSelected(View v, Video video) {
+        openYoutube(getApplicationContext(), video.getKey());
+    }
+
+    public void openYoutube(Context context, String key) {
+        if (key != null) {
+            try {
+                Intent youtubeAppIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd:youtube:" + key));
+                context.startActivity(youtubeAppIntent);
+            } catch (ActivityNotFoundException e) {
+                URL url = buildYouTubeURL(key);
+                if (url != null) {
+                    Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url.toString()));
+                    context.startActivity(webIntent);
+                }
+            }
+        }
+    }
+
+    public static URL buildYouTubeURL(String key) {
+        Uri uri = new Uri.Builder()
+                .scheme(SCHEME)
+                .appendEncodedPath(YOUTUBE_BASE_PATH)
+                .appendEncodedPath(YOUTUBE_WATCH_PATH)
+                .appendQueryParameter("v", key)
+                .build();
+
+        try {
+            return new URL(uri.toString());
+        } catch (MalformedURLException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        return null;
     }
 }

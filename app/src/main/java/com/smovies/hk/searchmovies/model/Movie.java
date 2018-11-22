@@ -2,6 +2,8 @@ package com.smovies.hk.searchmovies.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class Movie {
     private int id;
 
@@ -25,6 +27,9 @@ public class Movie {
     @SerializedName("credits")
     private Credits credits;
 
+    @SerializedName("videos")
+    private Videos videos;
+
     @SerializedName("runtime")
     private String runTime;
 
@@ -34,7 +39,7 @@ public class Movie {
     @SerializedName("homepage")
     private String homepage;
 
-    public Movie(int id, String title, String releaseDate, float rating, String thumbPath, String overview, String backdropPath, Credits credits, String runTime, String tagline, String homepage) {
+    public Movie(int id, String title, String releaseDate, float rating, String thumbPath, String overview, String backdropPath, Credits credits, Videos videos, String runTime, String tagline, String homepage) {
         this.id = id;
         this.title = title;
         this.releaseDate = releaseDate;
@@ -43,6 +48,7 @@ public class Movie {
         this.overview = overview;
         this.backdropPath = backdropPath;
         this.credits = credits;
+        this.videos = videos;
         this.runTime = runTime;
         this.tagline = tagline;
         this.homepage = homepage;
@@ -121,6 +127,14 @@ public class Movie {
         return credits;
     }
 
+    public Videos getTrailers(){
+        return videos;
+    }
+
+    public void setVideos(Videos videos) {
+        this.videos = videos;
+    }
+
     public void setCredits(Credits credits) {
         this.credits = credits;
     }
@@ -160,6 +174,7 @@ public class Movie {
                 ", overview='" + overview + '\'' +
                 ", backdropPath='" + backdropPath + '\'' +
                 ", credits=" + credits +
+                ", videos='" + videos + '\'' +
                 ", runTime='" + runTime + '\'' +
                 ", tagline='" + tagline + '\'' +
                 ", homepage='" + homepage + '\'' +

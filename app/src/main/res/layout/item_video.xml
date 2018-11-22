@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/layout_video_thumb"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="150dp"
+    android:layout_height="100dp"
+    android:layout_margin="@dimen/item_video_grid_layout_margin"
+    android:background="@color/colorViewBg">
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:contentDescription="@string/placeholder_image"
+        android:src="@drawable/ic_empty_movies"/>
+
+    <ImageView
+        android:id="@+id/image_view_video_thumb"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:maxHeight="150dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/poster_image"
+        android:foreground="?selectableItemBackground"/>
+
+</FrameLayout>
