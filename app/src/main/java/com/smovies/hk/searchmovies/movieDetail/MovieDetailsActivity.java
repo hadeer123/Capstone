@@ -15,6 +15,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -42,6 +44,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.service.notification.Condition.SCHEME;
+import static com.smovies.hk.searchmovies.utils.Constants.BASE;
 import static com.smovies.hk.searchmovies.utils.Constants.KEY_MOVIE_ID;
 import static com.smovies.hk.searchmovies.utils.Constants.YOUTUBE_BASE_PATH;
 import static com.smovies.hk.searchmovies.utils.Constants.YOUTUBE_WATCH_PATH;
@@ -243,6 +246,12 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_movie_detail, menu);
+        return true;
+    }
+
+    @Override
     public void onFragmentInteraction(Uri uri) {
 
     }
@@ -274,7 +283,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
 
     public static URL buildYouTubeURL(String key) {
         Uri uri = new Uri.Builder()
-                .scheme(SCHEME)
+                .scheme(BASE)
                 .appendEncodedPath(YOUTUBE_BASE_PATH)
                 .appendEncodedPath(YOUTUBE_WATCH_PATH)
                 .appendQueryParameter("v", key)
