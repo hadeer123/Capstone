@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.nav_view) NavigationView navigationView;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
+
     /**
      * The {@link PagerAdapter} that will provide
      * fragments for each of the sections. We use a

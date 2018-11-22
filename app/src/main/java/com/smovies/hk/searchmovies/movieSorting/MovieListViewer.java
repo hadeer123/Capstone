@@ -41,7 +41,7 @@ public class MovieListViewer implements MovieListContract.Presenter, MovieListCo
     }
 
     @Override
-    public void requestDataFromDB(int tabNumber, Context mContext) {
+    public void requestDataFromDB(int tabNumber, Context mContext, MovieListFragment fragment) {
         if (movieListView != null) {
             movieListView.showProgress();
         }

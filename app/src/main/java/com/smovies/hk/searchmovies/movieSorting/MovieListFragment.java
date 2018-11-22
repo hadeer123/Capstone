@@ -218,7 +218,7 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
             //retrofit pulling from internet
             movieListViewer.requestDataFromServer(tabNumber);
         } else {
-            movieListViewer.requestDataFromDB(tabNumber, getContext());
+            movieListViewer.requestDataFromDB(tabNumber, getContext(), this );
         }
         return rootView;
     }

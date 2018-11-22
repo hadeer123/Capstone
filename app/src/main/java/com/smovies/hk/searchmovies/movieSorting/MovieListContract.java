@@ -13,7 +13,7 @@ public interface MovieListContract {
 
         void getMovieList(OnFinishedListener onFinishedListener, int pageNo, int tabNumber);
 
-        void getMovieListFromDB(OnFinishedListener onFinishedListener, int tabNumber, Context mContext);
+        void getMovieListFromDB(OnFinishedListener onFinishedListener, int tabNumber, Context mContext, MovieListFragment movieListFragment);
 
         interface OnFinishedListener {
             void onFinished(List<Movie> movieArrayList);
@@ -43,7 +43,7 @@ public interface MovieListContract {
 
         void requestDataFromServer(int tabNumber);
 
-        void requestDataFromDB(int tabNumber, Context mContext);
+        void requestDataFromDB(int tabNumber, Context mContext, MovieListFragment fragment);
 
     }
 }
