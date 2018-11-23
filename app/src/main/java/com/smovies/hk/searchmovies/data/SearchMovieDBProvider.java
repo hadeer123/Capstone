@@ -7,11 +7,16 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.UnsupportedSchemeException;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.smovies.hk.searchmovies.R;
+
+import java.util.Objects;
 
 
 public class SearchMovieDBProvider extends ContentProvider{
@@ -26,6 +31,11 @@ public class SearchMovieDBProvider extends ContentProvider{
     public static final int IN_TO_WATCH_WITH_ID = 301;
 
     private static final UriMatcher uriMatcher= buildUriMatcher();
+    public static final String IS_TRUE = "=1";
+    private static final String TAG = SearchMovieDBProvider.class.getSimpleName();
+    private static final String AND = "=? AND ";
+    private static final int ARGS_SECOND_INDEX = 2;
+    private static final int ARGS_FIRST_INDEX = 1;
 
     private SavedMovieDBHelper favoriteMovieDBHelper;
 
@@ -57,51 +67,39 @@ public class SearchMovieDBProvider extends ContentProvider{
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         final SQLiteDatabase db = favoriteMovieDBHelper.getReadableDatabase();
         int match = uriMatcher.match(uri);
-        Cursor cursor = null;
+        Cursor cursor;
         String id;
-        String[] mSelectionArgs;
-
         switch (match){
-            case MOVIES:
-                cursor = db.query(SearchMovieContract.searchMoviesEntry.TABLE_NAME, projection, selection,selectionArgs,null,null,sortOrder);
-                break;
             case IN_FAV:
-                selection = SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV + "=1";
-                cursor = db.query(SearchMovieContract.searchMoviesEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                selection = SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV + IS_TRUE;
                 break;
             case IN_TO_WATCH:
-                selection = SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_WATCH + "=1";
-                cursor = db.query(SearchMovieContract.searchMoviesEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                selection = SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_WATCH + IS_TRUE;
                 break;
             case IN_FAV_WITH_ID:
-                id = uri.getPathSegments().get(2);
-                selection = SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_ID + "=?" + " AND "
-                        + SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV + "=1";
-                mSelectionArgs = new String[]{id};
-                cursor = db.query(SearchMovieContract.searchMoviesEntry.TABLE_NAME, projection, selection, mSelectionArgs, null, null, sortOrder);
+                id = uri.getPathSegments().get(ARGS_SECOND_INDEX);
+                selection = SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_ID + AND
+                        + SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV + IS_TRUE;
+                selectionArgs = new String[]{id};
                 break;
             case IN_TO_WATCH_WITH_ID:
-                id = uri.getPathSegments().get(2);
-                selection = SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_ID + "=?" + " AND "
-                        + SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_WATCH + "=1";
-                mSelectionArgs = new String[]{id};
-                cursor = db.query(SearchMovieContract.searchMoviesEntry.TABLE_NAME, projection, selection, mSelectionArgs, null, null, sortOrder);
+                id = uri.getPathSegments().get(ARGS_SECOND_INDEX);
+                selection = SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_ID + AND
+                        + SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_WATCH + IS_TRUE;
+                selectionArgs = new String[]{id};
                 break;
             case MOVIES_WITH_ID:
                 id = uri.getPathSegments().get(1);
-                String mSelection = SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_ID + "=?";
-                mSelectionArgs = new String[]{id};
-                cursor = db.query(SearchMovieContract.searchMoviesEntry.TABLE_NAME, projection, mSelection, mSelectionArgs, null, null, sortOrder);
+                selection = SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_ID + "=?";
+                selectionArgs = new String[]{id};
                 break;
 
             default:
-                try {
-                    throw new UnsupportedSchemeException("Unknown uri : "+uri);
-                } catch (UnsupportedSchemeException e) {
-                    e.printStackTrace();
-                }
+                unsupportedSchemeException(uri);
         }
-        cursor.setNotificationUri(getContext().getContentResolver(),uri);
+
+        cursor = db.query(SearchMovieContract.searchMoviesEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+        cursor.setNotificationUri(Objects.requireNonNull(getContext()).getContentResolver(), uri);
         return cursor;
     }
 
@@ -122,31 +120,48 @@ public class SearchMovieDBProvider extends ContentProvider{
 
         switch (match){
             case MOVIES:
-                id = db.insert(SearchMovieContract.searchMoviesEntry.TABLE_NAME, null, values);
-                if(id > 0){
-                    returnUri = ContentUris.withAppendedId(SearchMovieContract.searchMoviesEntry.CONTENT_URI, id);
-                }else {
-                    throw  new android.database.SQLException("Failed to insert row into "+ uri);
-                }
+                returnUri = insertInDB(uri, values, db, SearchMovieContract.searchMoviesEntry.CONTENT_URI);
                 break;
             case IN_FAV:
-                id = db.insert(SearchMovieContract.searchMoviesEntry.TABLE_NAME, null, values);
-                if (id > 0) {
-                    returnUri = ContentUris.withAppendedId(SearchMovieContract.searchMoviesEntry.CONTENT_URI_FAV, id);
-                } else {
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                }
+                returnUri = insertInDB(uri, values, db, SearchMovieContract.searchMoviesEntry.CONTENT_URI_FAV);
+                break;
+            case IN_TO_WATCH:
+                returnUri = insertInDB(uri, values, db, SearchMovieContract.searchMoviesEntry.CONTENT_URI_TO_WATCH);
                 break;
             default:
-                try {
-                    throw new UnsupportedSchemeException("Unknown uri : "+ uri);
-                } catch (UnsupportedSchemeException e) {
-                    e.printStackTrace();
-                }
+                unsupportedSchemeException(uri);
         }
 
-        getContext().getContentResolver().notifyChange(uri, null);
+        Objects.requireNonNull(getContext()).getContentResolver().notifyChange(uri, null);
         return returnUri;
+    }
+
+    private void unsupportedSchemeException(@NonNull Uri uri) {
+        try {
+            throw new UnsupportedSchemeException("Unknown uri : " + uri);
+        } catch (UnsupportedSchemeException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Uri insertInDB(@NonNull Uri uri, ContentValues values, SQLiteDatabase db, Uri contentUri) {
+        long id;
+        Uri returnUri = null;
+        id = db.insert(SearchMovieContract.searchMoviesEntry.TABLE_NAME, null, values);
+        if (id > 0) {
+            returnUri = ContentUris.withAppendedId(contentUri, id);
+        } else {
+            sqlError(uri);
+        }
+        return returnUri;
+    }
+
+    private void sqlError(@NonNull Uri uri) {
+        try {
+            throw new SQLException(getContext().getString(R.string.insert_error) + uri);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -154,7 +169,7 @@ public class SearchMovieDBProvider extends ContentProvider{
         final SQLiteDatabase db = favoriteMovieDBHelper.getWritableDatabase();
         int match = uriMatcher.match(uri);
 
-        int movieDeleted;
+        int movieDeleted = 0;
 
         switch (match){
             case  MOVIES_WITH_ID:
@@ -163,7 +178,7 @@ public class SearchMovieDBProvider extends ContentProvider{
                         SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_ID + "=?", new String[]{id});
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown uri: "+uri);
+                unsupportedSchemeException(uri);
 
         }
         if(movieDeleted !=0)
@@ -174,6 +189,36 @@ public class SearchMovieDBProvider extends ContentProvider{
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        throw new UnsupportedOperationException("Not yet Implemented");
+        final SQLiteDatabase db = favoriteMovieDBHelper.getWritableDatabase();
+        int match = uriMatcher.match(uri);
+        int movieUpdated = 0;
+        switch (match) {
+            case MOVIES_WITH_ID:
+                String id = uri.getPathSegments().get(ARGS_FIRST_INDEX);
+                selection = SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_ID + AND
+                        + SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV + IS_TRUE;
+                selectionArgs = new String[]{id};
+                break;
+            case IN_FAV_WITH_ID:
+                id = uri.getPathSegments().get(ARGS_SECOND_INDEX);
+                selection = SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_ID + AND
+                        + SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV + IS_TRUE;
+                selectionArgs = new String[]{id};
+                break;
+            case IN_TO_WATCH_WITH_ID:
+                id = uri.getPathSegments().get(ARGS_SECOND_INDEX);
+                selection = SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_ID + AND
+                        + SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_WATCH + IS_TRUE;
+                selectionArgs = new String[]{id};
+                break;
+            default:
+                unsupportedSchemeException(uri);
+
+        }
+        if (movieUpdated != 0)
+            getContext().getContentResolver().notifyChange(uri, null);
+
+        movieUpdated = db.update(SearchMovieContract.searchMoviesEntry.TABLE_NAME, values, selection, selectionArgs);
+        return movieUpdated;
     }
 }

@@ -67,10 +67,10 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
         super.onAttach(context);
         switch (tabNumber) {
             case FAV_LIST:
-                getActivity().setTitle(getString(R.string.nav_favorites_t));
+                Objects.requireNonNull(getActivity()).setTitle(getString(R.string.nav_favorites_t));
                 break;
             case TO_WATCH_LIST:
-                getActivity().setTitle(getString(R.string.nav_to_watch_t));
+                Objects.requireNonNull(getActivity()).setTitle(getString(R.string.nav_to_watch_t));
                 break;
             default:
                 break;
@@ -122,7 +122,8 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
 
                 if (!loading && (totalItemCount - visibleItemCount)
                         <= (firstVisibleItem + visibleThreshold)) {
-                    movieListViewer.getMoreData(pageNo, tabNumber);
+                    if (tabNumber < 3)
+                        movieListViewer.getMoreData(pageNo, tabNumber);
                     loading = true;
                 }
 
@@ -218,7 +219,8 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
             //retrofit pulling from internet
             movieListViewer.requestDataFromServer(tabNumber);
         } else {
-            movieListViewer.requestDataFromDB(tabNumber, getContext(), this );
+            if (moviesList.isEmpty())
+                movieListViewer.requestDataFromDB(tabNumber, getContext(), this);
         }
         return rootView;
     }

@@ -43,7 +43,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static android.service.notification.Condition.SCHEME;
 import static com.smovies.hk.searchmovies.utils.Constants.BASE;
 import static com.smovies.hk.searchmovies.utils.Constants.KEY_MOVIE_ID;
 import static com.smovies.hk.searchmovies.utils.Constants.YOUTUBE_BASE_PATH;
@@ -96,6 +95,11 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         initCollapsingToolbar();
         initUI();
+    }
+
+    @Override
+    public MenuInflater getMenuInflater() {
+        return super.getMenuInflater();
     }
 
     private void initUI() {
@@ -230,7 +234,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
 
         if(trailersFragment != null)
             trailersFragment.onResponseFailure(throwable);
-
     }
 
     @Override
@@ -248,7 +251,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_movie_detail, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

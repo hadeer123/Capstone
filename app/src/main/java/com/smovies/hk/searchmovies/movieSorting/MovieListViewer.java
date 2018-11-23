@@ -45,7 +45,7 @@ public class MovieListViewer implements MovieListContract.Presenter, MovieListCo
         if (movieListView != null) {
             movieListView.showProgress();
         }
-        movieListModel.getMovieListFromDB(this, tabNumber, mContext);
+        movieListModel.getMovieListFromDB(this, tabNumber, mContext, fragment);
     }
 
     @Override

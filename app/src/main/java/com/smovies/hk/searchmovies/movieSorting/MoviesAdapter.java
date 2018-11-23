@@ -32,6 +32,7 @@ import butterknife.ButterKnife;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMoviesViewHolder> {
     private static final String TAG = MoviesAdapter.class.getSimpleName();
+    private static final int UN_SAVE = 0;
     private MovieListFragment movieListFragment;
     private List<Movie> movieList;
 
@@ -90,27 +91,30 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
         holder.ivAddFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isSaved(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_FAV))
-                    saveToDB(holder.ivAddFav, movie
-                            , SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV
-                            , SearchMovieContract.searchMoviesEntry.CONTENT_URI_FAV);
-                else
-                    unSave(holder.ivAddFav, movie, SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV);
+                ivDBOnClickHandler(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_FAV
+                        , holder.ivAddFav, SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV);
             }
         });
 
         holder.ivAddToWatch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isSaved(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_TO_WATCH))
-                    saveToDB(holder.ivAddFav, movie
-                            , SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_WATCH
-                            , SearchMovieContract.searchMoviesEntry.CONTENT_URI_TO_WATCH);
-                else
-                    unSave(holder.ivAddFav, movie, SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV);
+                ivDBOnClickHandler(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_TO_WATCH
+                        , holder.ivAddToWatch, SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_WATCH);
             }
         });
 
+    }
+
+    private void ivDBOnClickHandler(Movie movie, Uri contentUri, ImageView imageView, String columnSave) {
+        if (!isSaved(movie, contentUri))
+            saveToDB(imageView, movie
+                    , columnSave
+                    , contentUri);
+        else
+            unSave(imageView, movie
+                    , columnSave
+                    , contentUri);
     }
 
     public boolean isSaved(Movie movie, Uri uri) {
@@ -119,20 +123,50 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
         uri = uri.buildUpon().appendPath(stringId).build();
         Cursor cursor = movieListFragment.getActivity()
                 .getContentResolver().query(uri, null, null, null, null, null);
-        return cursor.getCount() != 0;
+
+        boolean re = false;
+        try {
+            re = cursor.getCount() != 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            cursor.close();
+        }
+
+
+        return re;
     }
 
-    private void unSave(ImageView imageView, Movie movie, String saveIn) {
-        //TODO delete instead of update
-        contentProviderDeleteEntry(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI);
-        updateViewAfterAction(imageView, movie, saveIn);
+    private void unSave(ImageView imageView, Movie movie, String dbColumn, Uri uri) {
+        contentProviderUpdateEntry(movie, uri, dbColumn, UN_SAVE);
+        updateViewAfterAction(imageView, movie, dbColumn);
     }
+
+    public void contentProviderUpdateEntry(Movie movie, Uri uri, String DBColumn, int bool) {
+
+        ContentValues contentValues = getMovieContentValues(movie);
+        contentValues.put(DBColumn, bool);
+
+        int id = movie.getId();
+        String stringId = Integer.toString(id);
+        uri = uri.buildUpon().appendPath(stringId).build();
+        try {
+            movieListFragment.getActivity().getContentResolver().update(uri, contentValues, null, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void contentProviderDeleteEntry(Movie movie, Uri uri) {
         int id = movie.getId();
         String stringId = Integer.toString(id);
         uri = uri.buildUpon().appendPath(stringId).build();
-        movieListFragment.getActivity().getContentResolver().delete(uri, null, null);
+        try {
+            movieListFragment.getActivity().getContentResolver().delete(uri, null, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateViewAfterAction(ImageView imageView, Movie movie, String saveIn) {
@@ -143,11 +177,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
     }
 
     public void saveToDB(ImageView imageView, Movie movie, String DBColumn, Uri path) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_ID, movie.getId());
-        contentValues.put(SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_TITLE, movie.getTitle());
 
+        ContentValues contentValues = getMovieContentValues(movie);
         contentValues.put(DBColumn, 1);
+
         Uri uri = movieListFragment.getActivity()
                 .getContentResolver().insert(path, contentValues);
 
@@ -160,6 +193,18 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
             }
 
         }
+    }
+
+    @NonNull
+    private ContentValues getMovieContentValues(Movie movie) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_ID, movie.getId());
+        contentValues.put(SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_TITLE, movie.getTitle());
+        contentValues.put(SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_RELEASE_DATE, movie.getReleaseDate());
+        contentValues.put(SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_RATING, movie.getRating());
+        contentValues.put(SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_BACKDROP_PATH, movie.getBackdropPath());
+        contentValues.put(SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_THUMB_PATH, movie.getThumbPath());
+        return contentValues;
     }
 
     private void updateSavedToFav(Movie movie, ImageView imageView) {

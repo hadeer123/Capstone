@@ -53,4 +53,6 @@
     <string name="movie_id_args">movieID</string>
     <string name="no_trailers_error_message">No trailers found.</string>
     <string name="trailers_text_view">Trailers</string>
+    <string name="insert_error">Failed to insert row into</string>
+    <string name="failed_to_load_data">Failed to asynchronously load data.</string>
 </resources>
