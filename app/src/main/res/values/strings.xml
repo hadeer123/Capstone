@@ -57,4 +57,7 @@
     <string name="failed_to_load_data">Failed to asynchronously load data.</string>
     <string name="unsaved_msg">Unsaved !</string>
     <string name="saved_msg">Saved !</string>
+    <string name="ad_unit_id">/6499/example/interstitial</string>
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+
 </resources>

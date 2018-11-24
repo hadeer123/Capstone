@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.ads.MobileAds;
 import com.smovies.hk.searchmovies.movieSorting.MovieListFragment;
 
 import butterknife.BindView;
@@ -55,6 +56,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        MobileAds.initialize(this, getString(R.string.ad_unit_id));
 
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);

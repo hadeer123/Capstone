@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -31,6 +32,9 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
+import com.google.android.gms.ads.doubleclick.PublisherInterstitialAd;
 import com.smovies.hk.searchmovies.R;
 import com.smovies.hk.searchmovies.data.SaveMovieDBHandler;
 import com.smovies.hk.searchmovies.model.Cast;
@@ -54,6 +58,7 @@ import static com.smovies.hk.searchmovies.utils.Constants.YOUTUBE_WATCH_PATH;
 public class MovieDetailsActivity extends AppCompatActivity implements MovieDetailContract.View, TrailersFragment.OnFragmentInteractionListener{
     private static final String TAG = MovieDetailsActivity.class.getSimpleName();
     private static final SaveMovieDBHandler sH = SaveMovieDBHandler.singleton();
+    private PublisherInterstitialAd mPublisherInterstitialAd;
 
     @BindView(R.id.image_view_poster) ImageView ivPoster;
     @BindView(R.id.progress_bar_cast) ProgressBar pbLoadCast;
@@ -76,7 +81,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbar;
     @BindView(R.id.appbar) AppBarLayout appBarLayout;
     @BindView(R.id.toolbar) Toolbar toolbar;
-
 
     private CastAdapter castAdapter;
     private MovieDetailViewer movieDetailsPresenter;
@@ -103,11 +107,40 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         initCollapsingToolbar();
         initUI();
+        initAds();
     }
+
 
     @Override
     public MenuInflater getMenuInflater() {
         return super.getMenuInflater();
+    }
+
+    private void initAds() {
+        mPublisherInterstitialAd = new PublisherInterstitialAd(this);
+        mPublisherInterstitialAd.setAdUnitId(getString(R.string.ad_unit_id));
+
+        mPublisherInterstitialAd.loadAd(new PublisherAdRequest.Builder().build());
+
+        mPublisherInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+                Toast.makeText(getApplicationContext(), "Ad did not load", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                mPublisherInterstitialAd.show();
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when when the interstitial ad is closed.
+
+            }
+        });
     }
 
     private void initUI() {
@@ -222,12 +255,10 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
                     .apply(new RequestOptions().placeholder(R.drawable.ic_empty_movies).error(R.drawable.ic_empty_movies))
                     .into(ivPoster);
 
-
             updateCastView(movie);
 
             if(trailersFragment != null)
                  trailersFragment.setDataToViews(movie);
-
         }
 
     }
