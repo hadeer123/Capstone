@@ -55,4 +55,6 @@
     <string name="trailers_text_view">Trailers</string>
     <string name="insert_error">Failed to insert row into</string>
     <string name="failed_to_load_data">Failed to asynchronously load data.</string>
+    <string name="unsaved_msg">Unsaved !</string>
+    <string name="saved_msg">Saved !</string>
 </resources>

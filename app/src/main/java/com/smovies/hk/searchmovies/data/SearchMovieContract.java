@@ -28,7 +28,8 @@ public class SearchMovieContract {
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_MOVIES).appendPath(PATH_TO_WATCH).build();
 
         // Task table and column names
-        public static final String TABLE_NAME = "favMovies";
+        public static final String FAV_TABLE_NAME = "favMovies";
+        public static final String TO_WATCH_TABLE_NAME = "toWatch";
 
         public static final String COLUMN_MOVIE_ID = "movieID";
         public static final String COLUMN_MOVIE_TITLE = "title";

@@ -16,7 +16,12 @@ public class SavedMovieDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        final String CREATE_TABLE = "CREATE TABLE " + SearchMovieContract.searchMoviesEntry.TABLE_NAME + " (" +
+        db.execSQL(getDBTable(SearchMovieContract.searchMoviesEntry.FAV_TABLE_NAME));
+        db.execSQL(getDBTable(SearchMovieContract.searchMoviesEntry.TO_WATCH_TABLE_NAME));
+    }
+
+    private String getDBTable(String TABLE_NAME) {
+        return "CREATE TABLE " + TABLE_NAME + " (" +
                 SearchMovieContract.searchMoviesEntry._ID + " INTEGER PRIMARY KEY, " +
                 SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL, " +
                 SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_TITLE + " TEXT NOT NULL," +
@@ -26,15 +31,15 @@ public class SavedMovieDBHelper extends SQLiteOpenHelper {
                 SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_OVERVIEW + " TEXT," +
                 SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_BACKDROP_PATH + " TEXT," +
                 SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_RUNTIME + " TEXT," +
-                SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV + " BOOLEAN NOT NULL DEFAULT 0,"+
+                SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_FAV + " BOOLEAN NOT NULL DEFAULT 0," +
                 SearchMovieContract.searchMoviesEntry.COLUMN_SAVE_TO_WATCH + " BOOLEAN NOT NULL DEFAULT 0 );";
-        db.execSQL(CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //TODO do something here ??
-        db.execSQL("DROP TABLE IF EXISTS " + SearchMovieContract.searchMoviesEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + SearchMovieContract.searchMoviesEntry.FAV_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + SearchMovieContract.searchMoviesEntry.TO_WATCH_TABLE_NAME);
     }
 
 }

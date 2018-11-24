@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -253,6 +254,12 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
         getMenuInflater().inflate(R.menu.menu_movie_detail, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     public void onFragmentInteraction(Uri uri) {
