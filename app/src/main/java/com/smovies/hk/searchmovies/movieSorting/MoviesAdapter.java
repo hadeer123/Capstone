@@ -30,8 +30,6 @@ import butterknife.ButterKnife;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMoviesViewHolder> {
     private static final String TAG = MoviesAdapter.class.getSimpleName();
-    private static final int UN_SAVE = 0;
-    private static final int SAVE = 1;
     private MovieListFragment movieListFragment;
     private List<Movie> movieList;
 
@@ -60,8 +58,15 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
         holder.tvMovieRatings.setText(String.valueOf(movie.getRating()));
         holder.tvReleaseDate.setText(movie.getReleaseDate());
 
-        SaveMovieDBHandler.singleton().updateSaved(movie, holder.ivAddFav, context, R.mipmap.ic_fav_full, R.mipmap.ic_fav_empty);
-        SaveMovieDBHandler.singleton().updateSaved(movie, holder.ivAddToWatch, context, R.mipmap.ic_plus_full, R.mipmap.ic_plus_empty);
+        final SaveMovieDBHandler singleton = SaveMovieDBHandler.singleton();
+
+        singleton.updateSaved(movie.getId(), holder.ivAddFav,
+                context, SaveMovieDBHandler.FAV.SAVE.DEFAULT_VALUE_ID
+                , SaveMovieDBHandler.FAV.UNSAVE.DEFAULT_VALUE_ID, SaveMovieDBHandler.FAV_URI);
+
+        singleton.updateSaved(movie.getId(), holder.ivAddToWatch,
+                context, SaveMovieDBHandler.TO_WATCH.SAVE.DEFAULT_VALUE_ID
+                , SaveMovieDBHandler.TO_WATCH.UNSAVE.DEFAULT_VALUE_ID, SaveMovieDBHandler.TO_WATCH_URI);
 
         // loading album cover using Glide library
         Glide.with(movieListFragment)
@@ -92,16 +97,18 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
         holder.ivAddFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SaveMovieDBHandler.singleton().ivDBOnClickHandler(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_FAV
-                        , holder.ivAddFav, context);
+                singleton.ivDBOnClickHandler(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_FAV
+                        , holder.ivAddFav, null, null
+                        , context);
             }
         });
 
         holder.ivAddToWatch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SaveMovieDBHandler.singleton().ivDBOnClickHandler(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_TO_WATCH
-                        , holder.ivAddToWatch, context);
+                singleton.ivDBOnClickHandler(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_TO_WATCH
+                        , holder.ivAddToWatch, null, null
+                        , context);
             }
         });
 

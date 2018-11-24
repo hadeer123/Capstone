@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,6 +32,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.smovies.hk.searchmovies.R;
+import com.smovies.hk.searchmovies.data.SaveMovieDBHandler;
 import com.smovies.hk.searchmovies.model.Cast;
 import com.smovies.hk.searchmovies.model.Movie;
 import com.smovies.hk.searchmovies.model.Video;
@@ -51,9 +53,11 @@ import static com.smovies.hk.searchmovies.utils.Constants.YOUTUBE_WATCH_PATH;
 
 public class MovieDetailsActivity extends AppCompatActivity implements MovieDetailContract.View, TrailersFragment.OnFragmentInteractionListener{
     private static final String TAG = MovieDetailsActivity.class.getSimpleName();
+    private static final SaveMovieDBHandler sH = SaveMovieDBHandler.singleton();
 
     @BindView(R.id.image_view_poster) ImageView ivPoster;
     @BindView(R.id.progress_bar_cast) ProgressBar pbLoadCast;
+    @BindView(R.id.btn_fav) FloatingActionButton fbFavorite;
     @BindView(R.id.text_view_movie_plot) TextView tvMovieDescription;
     @BindView(R.id.text_view_movie_title) TextView tvMovieTitleSub;
     @BindView(R.id.text_view_movie_release_date) TextView tvMovieReleaseDate;
@@ -73,6 +77,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     @BindView(R.id.appbar) AppBarLayout appBarLayout;
     @BindView(R.id.toolbar) Toolbar toolbar;
 
+
     private CastAdapter castAdapter;
     private MovieDetailViewer movieDetailsPresenter;
     private TrailersFragment trailersFragment;
@@ -82,6 +87,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     //@BindView(R.id.layout_movie_detail) ConstraintLayout mainContentLayout;
 
     private String movieName;
+    private Movie movie;
+    private int movieID;
 
 
     @Override
@@ -112,7 +119,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
         rvCast.setAdapter(castAdapter);
 
         movieDetailsPresenter = new MovieDetailViewer(this);
-        movieDetailsPresenter.requestMovieData(getIntent().getIntExtra(KEY_MOVIE_ID, 0));
+        movieID = getIntent().getIntExtra(KEY_MOVIE_ID, 0);
+        movieDetailsPresenter.requestMovieData(movieID);
     }
 
 
@@ -165,8 +173,10 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     }
 
     @Override
-    public void setDataToViews(Movie movie) {
+    public void setDataToViews(final Movie movie) {
         if (movie != null) {
+            this.movie = movie;
+            updateFab(movie);
             movieName = movie.getTitle();
             tvMovieTitle.setText(movieName);
 
@@ -222,6 +232,17 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
 
     }
 
+    private void updateFab(final Movie movie) {
+        sH.updateSaved(movie.getId(), fbFavorite, getApplicationContext(), SaveMovieDBHandler.FAV.SAVE.DEFAULT_VALUE_ID
+                , SaveMovieDBHandler.FAV.UNSAVE.DEFAULT_VALUE_ID, SaveMovieDBHandler.FAV_URI);
+        fbFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sH.ivDBOnClickHandler(movie, SaveMovieDBHandler.FAV_URI, null, fbFavorite, null, getBaseContext());
+            }
+        });
+    }
+
     public void updateCastView(Movie movie) {
         castList.clear();
         castList.addAll(movie.getCredits().getCast());
@@ -252,12 +273,28 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_movie_detail, menu);
+
+        menu.findItem(R.id.action_toWatch).setIcon(sH.updateSavedResource(movieID, getApplicationContext(), SaveMovieDBHandler.TO_WATCH.SAVE.DEFAULT_VALUE_ID,
+                SaveMovieDBHandler.TO_WATCH.UNSAVE.DEFAULT_VALUE_ID, SaveMovieDBHandler.TO_WATCH_URI));
+
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_toWatch:
+                updateToWatchTable(item);
+                return true;
+            case R.id.action_share:
+                return true;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateToWatchTable(MenuItem item) {
+        if (movie != null)
+            sH.ivDBOnClickHandler(movie, SaveMovieDBHandler.TO_WATCH_URI, null, null, item, getApplicationContext());
     }
 
 
