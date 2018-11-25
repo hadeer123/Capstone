@@ -1,6 +1,7 @@
 package com.smovies.hk.searchmovies;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,10 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.smovies.hk.searchmovies.movieSorting.MovieListFragment;
 
 import butterknife.BindView;
@@ -179,6 +184,8 @@ public class MainActivity extends AppCompatActivity
                 tabLayout.setVisibility(View.GONE);
                 navigationView.setCheckedItem(R.id.nav_to_watch);
                 break;
+            case R.id.nav_signout:
+                signOutFromApp();
             default:
                 mViewPager.setCurrentItem(PLAYING_NOW);
                 updateTabVisibility();
@@ -186,6 +193,15 @@ public class MainActivity extends AppCompatActivity
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void signOutFromApp() {
+        GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                finish();
+            }
+        });
     }
 
     public void updateTabVisibility() {
