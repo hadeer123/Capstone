@@ -32,10 +32,16 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
     private static final String TAG = MoviesAdapter.class.getSimpleName();
     private MovieListFragment movieListFragment;
     private List<Movie> movieList;
+    private Context mContext;
 
 
     public MoviesAdapter(MovieListFragment movieListFragment, List<Movie> movieList) {
         this.movieListFragment = movieListFragment;
+        this.movieList = movieList;
+    }
+
+    public MoviesAdapter(List<Movie> movieList, Context context) {
+        mContext = context;
         this.movieList = movieList;
     }
 
@@ -52,7 +58,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
     public void onBindViewHolder(@NonNull final ListMoviesViewHolder holder, final int position) {
 
         final Movie movie = movieList.get(position);
-        final Context context = movieListFragment.getContext();
+        final Context context;
+        if (movieListFragment != null) {
+            context = movieListFragment.getContext();
+        } else {
+            context = mContext;
+        }
+
 
         holder.tvMovieTitle.setText(movie.getTitle());
         holder.tvMovieRatings.setText(String.valueOf(movie.getRating()));
@@ -69,7 +81,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
                 , SaveMovieDBHandler.TO_WATCH.UNSAVE.DEFAULT_VALUE_ID, SaveMovieDBHandler.TO_WATCH_URI);
 
         // loading album cover using Glide library
-        Glide.with(movieListFragment)
+        Glide.with(context)
                 .load(ApiClient.IMAGE_BASE_URL + movie.getThumbPath())
                 .listener(new RequestListener<Drawable>() {
                     @Override

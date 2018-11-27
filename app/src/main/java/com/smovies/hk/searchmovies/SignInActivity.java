@@ -1,6 +1,5 @@
 package com.smovies.hk.searchmovies;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -46,14 +44,7 @@ public class SignInActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-//        if(getPreferences(MODE_PRIVATE) != null){
-//            //shared preferences is not empty.
-//            SharedPreferences userData = getPreferences (MODE_PRIVATE);
-//            String username = userData.getString(getString(R.string.key_username),"");
-//            String email = userData.getString(getString(R.string.key_user_email),"");
-//
-//            startMainActivity(username, email);
-//        }
+
         // Views
         mStatusTextView = findViewById(R.id.status);
 
@@ -90,7 +81,9 @@ public class SignInActivity extends AppCompatActivity implements
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        updateUI(account);
+        if (account != null) {
+            startMainActivity(account.getDisplayName(), account.getEmail());
+        }
         // [END on_start_sign_in]
     }
 
@@ -117,7 +110,6 @@ public class SignInActivity extends AppCompatActivity implements
             startMainActivity(account.getDisplayName(), account.getEmail());
             // Signed in successfully, show authenticated UI.
             //updateUI(account);
-            startMainActivity(account.getDisplayName(), account.getEmail());
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -175,6 +167,7 @@ public class SignInActivity extends AppCompatActivity implements
         intent.putExtra(getString(R.string.key_username), username);
         intent.putExtra(getString(R.string.key_user_email), email);
         startActivity(intent);
+        this.finishAfterTransition();
     }
 
     private void updateUI(@Nullable GoogleSignInAccount account) {

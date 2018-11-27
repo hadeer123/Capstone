@@ -26,6 +26,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.smovies.hk.searchmovies.movieSorting.MovieListFragment;
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -115,9 +117,9 @@ public class MainActivity extends AppCompatActivity
         });
 
         //set icons in tab layout
-        tabLayout.getTabAt(PLAYING_NOW).setIcon(R.drawable.ic_menu_slideshow);
-        tabLayout.getTabAt(POPULAR).setIcon(R.drawable.ic_whatshot_black_24dp);
-        tabLayout.getTabAt(TOP_RATED).setIcon(R.drawable.ic_top_rated_yellow_24dp);
+        Objects.requireNonNull(tabLayout.getTabAt(PLAYING_NOW)).setIcon(R.drawable.ic_menu_slideshow);
+        Objects.requireNonNull(tabLayout.getTabAt(POPULAR)).setIcon(R.drawable.ic_whatshot_black_24dp);
+        Objects.requireNonNull(tabLayout.getTabAt(TOP_RATED)).setIcon(R.drawable.ic_top_rated_yellow_24dp);
 
         //remove last two tabs (Favorites & TO Watch)
         tabLayout.removeTabAt(tabLayout.getTabCount() - 1);
@@ -158,7 +160,7 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         switch (id) {
@@ -199,7 +201,8 @@ public class MainActivity extends AppCompatActivity
         GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                finish();
+                finishAndRemoveTask();
+                System.exit(0);
             }
         });
     }

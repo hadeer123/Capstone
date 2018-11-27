@@ -33,7 +33,7 @@ import static com.smovies.hk.searchmovies.utils.Constants.KEY_MOVIE_ID;
 import static com.smovies.hk.searchmovies.utils.Constants.TO_WATCH_LIST;
 import static com.smovies.hk.searchmovies.utils.GridSpacingItemDecoration.dpToPx;
 
-
+//TODO Favorite and TO WATCH ARE NOT BEING UPDATED
 public class MovieListFragment extends Fragment implements MovieListContract.View, MovieItemClickListener,
         ShowEmptyView {
 

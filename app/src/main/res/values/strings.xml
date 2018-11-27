@@ -59,7 +59,7 @@
     <string name="saved_msg">Saved !</string>
     <string name="ad_unit_id">/6499/example/interstitial</string>
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
-
+    <string name="moviedetailfragment_releasedate">Release Date:</string>
 
     <!-- Sign-in status messages -->
     <string name="signed_in_fmt">Signed in as: %s</string>
@@ -117,5 +117,8 @@
     <string name="key_username">Key_username</string>
     <string name="key_user_email">Key_user_email</string>
     <string name="nav_logout">Logout</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="empty_widget_view">No movies saved !</string>
 </resources>
 
