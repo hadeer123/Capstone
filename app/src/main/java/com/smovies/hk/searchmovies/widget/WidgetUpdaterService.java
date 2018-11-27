@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -89,12 +90,11 @@ public class WidgetUpdaterService extends RemoteViewsService {
             RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget_list_item);
 
             if (mCursor == null || mCursor.getCount() == 0) {
-                return null;
+                views.setViewVisibility(R.id.empty_view, View.VISIBLE);
             }
 
-
             mCursor.moveToPosition(position);
-
+            views.setViewVisibility(R.id.empty_view, View.GONE);
             int idC = mCursor.getColumnIndex(SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_ID);
             int titleC = mCursor.getColumnIndex(SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_TITLE);
             int releaseDateC = mCursor.getColumnIndex(SearchMovieContract.searchMoviesEntry.COLUMN_MOVIE_RELEASE_DATE);

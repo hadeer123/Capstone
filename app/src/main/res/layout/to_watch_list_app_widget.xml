@@ -5,19 +5,12 @@
              android:background="@color/colorViewBg"
              android:padding="@dimen/widget_margin">
 
-    <ListView
-        android:id="@+id/widget_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:dividerHeight="2dp"
-        android:gravity="center"
-        android:scrollbars="vertical"/>
-
     <RelativeLayout
         android:id="@+id/empty_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,8 +24,17 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:alpha="0.2"
+            android:contentDescription="TODO"
             android:src="@drawable/ic_empty_movies"/>
     </RelativeLayout>
+
+    <ListView
+        android:id="@+id/widget_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:dividerHeight="2dp"
+        android:gravity="center"
+        android:scrollbars="vertical"/>
+
 
 </FrameLayout>
