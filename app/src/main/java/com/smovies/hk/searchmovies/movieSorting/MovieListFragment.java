@@ -29,7 +29,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.smovies.hk.searchmovies.utils.Constants.FAV_LIST;
+import static com.smovies.hk.searchmovies.utils.Constants.GET_MOVIES;
 import static com.smovies.hk.searchmovies.utils.Constants.KEY_MOVIE_ID;
+import static com.smovies.hk.searchmovies.utils.Constants.PLAYING_NOW;
+import static com.smovies.hk.searchmovies.utils.Constants.POPULAR;
+import static com.smovies.hk.searchmovies.utils.Constants.TOP_RATED;
 import static com.smovies.hk.searchmovies.utils.Constants.TO_WATCH_LIST;
 import static com.smovies.hk.searchmovies.utils.GridSpacingItemDecoration.dpToPx;
 
@@ -39,6 +43,7 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
 
     private static final String TAG = MovieListFragment.class.getSimpleName();
     private static final String ARG_SECTION_NUMBER = "section_number";
+    public static final String ARGS_SEARCH_QUERY = "search_query";
 
     int firstVisibleItem, visibleItemCount, totalItemCount;
     @BindView(R.id.rv_movie_list) RecyclerView rvMovieList;
@@ -56,7 +61,7 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
     private int visibleThreshold = 5;
     private GridLayoutManager mLayoutManager;
     private int tabNumber;
-    private String dBQuery = null;
+    private String queryString;
 
     public MovieListFragment() {
         // Required empty public constructor
@@ -81,6 +86,15 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
         MovieListFragment fragment = new MovieListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static MovieListFragment newInstance(int sectionNumber, String queryString) {
+        MovieListFragment fragment = new MovieListFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        args.putString(ARGS_SEARCH_QUERY, queryString);
         fragment.setArguments(args);
         return fragment;
     }
@@ -123,7 +137,7 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
                 if (!loading && (totalItemCount - visibleItemCount)
                         <= (firstVisibleItem + visibleThreshold)) {
                     if (tabNumber < 3)
-                        movieListViewer.getMoreData(pageNo, tabNumber);
+                        movieListViewer.getMoreData(pageNo, null, tabNumber);
                     loading = true;
                 }
 
@@ -137,6 +151,7 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             tabNumber = getArguments().getInt(ARG_SECTION_NUMBER);
+            queryString = getArguments().getString(ARGS_SEARCH_QUERY);
         }
     }
 
@@ -215,13 +230,21 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
         initUI();
         setListeners();
         movieListViewer = new MovieListViewer(this);
-        if (tabNumber < 3) {
-            //retrofit pulling from internet
-            movieListViewer.requestDataFromServer(tabNumber);
-        } else {
-            if (moviesList.isEmpty())
+        switch (tabNumber) {
+            case PLAYING_NOW:
+            case POPULAR:
+            case TOP_RATED:
+                movieListViewer.requestDataFromServer(tabNumber, null);
+                break;
+            case GET_MOVIES:
+                movieListViewer.requestDataFromServer(tabNumber, queryString);
+                break;
+            case FAV_LIST:
+            case TO_WATCH_LIST:
                 movieListViewer.requestDataFromDB(tabNumber, getContext(), this);
+                break;
         }
+
         return rootView;
     }
 

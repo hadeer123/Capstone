@@ -11,7 +11,7 @@ public interface MovieListContract {
 
     interface Model {
 
-        void getMovieList(OnFinishedListener onFinishedListener, int pageNo, int tabNumber);
+        void getMovieList(OnFinishedListener onFinishedListener, String query, int pageNo, int tabNumber);
 
         void getMovieListFromDB(OnFinishedListener onFinishedListener, int tabNumber, Context mContext, MovieListFragment movieListFragment);
 
@@ -39,9 +39,9 @@ public interface MovieListContract {
 
         void onDestroy();
 
-        void getMoreData(int pageNo, int tabNumber);
+        void getMoreData(int pageNo, String query, int tabNumber);
 
-        void requestDataFromServer(int tabNumber);
+        void requestDataFromServer(int tabNumber, String query);
 
         void requestDataFromDB(int tabNumber, Context mContext, MovieListFragment fragment);
 

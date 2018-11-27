@@ -17,6 +17,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.smovies.hk.searchmovies.network.ApiClient.API_MOVIE_DB;
+import static com.smovies.hk.searchmovies.utils.Constants.GET_MOVIES;
 import static com.smovies.hk.searchmovies.utils.Constants.PLAYING_NOW;
 import static com.smovies.hk.searchmovies.utils.Constants.POPULAR;
 import static com.smovies.hk.searchmovies.utils.Constants.TOP_RATED;
@@ -26,12 +27,12 @@ public class MovieListModel implements MovieListContract.Model {
     private final String TAG = MovieListModel.class.getSimpleName();
 
     @Override
-    public void getMovieList(final OnFinishedListener onFinishedListener, int pageNo, int tabNumber) {
+    public void getMovieList(final OnFinishedListener onFinishedListener, String query, int pageNo, int tabNumber) {
 
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
-        Call<MovieListResponse> call = getMovieListResponseCall(pageNo, tabNumber, apiService);
+        Call<MovieListResponse> call = getMovieListResponseCall(pageNo, query, tabNumber, apiService);
 
         call.enqueue(new Callback<MovieListResponse>() {
             @Override
@@ -61,7 +62,7 @@ public class MovieListModel implements MovieListContract.Model {
 
     }
 
-    public Call<MovieListResponse> getMovieListResponseCall(int pageNo, int tabNumber, ApiInterface apiService) {
+    public Call<MovieListResponse> getMovieListResponseCall(int pageNo, String query, int tabNumber, ApiInterface apiService) {
         Call<MovieListResponse> call = null;
         switch (tabNumber) {
             case PLAYING_NOW:
@@ -75,6 +76,10 @@ public class MovieListModel implements MovieListContract.Model {
             case TOP_RATED:
                 call =
                         apiService.getTopRatedMoviesList(API_MOVIE_DB, pageNo);
+                break;
+            case GET_MOVIES:
+                call =
+                        apiService.getMoviesList(API_MOVIE_DB, query, pageNo);
                 break;
             default:
                 break;

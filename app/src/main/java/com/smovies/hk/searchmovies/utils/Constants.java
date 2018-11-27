@@ -17,6 +17,7 @@ public class Constants {
     public final static int TOP_RATED = 2;
     public final static int FAV_LIST = 3;
     public final static int TO_WATCH_LIST = 4;
+    public final static int GET_MOVIES = 5;
     public final static int MAX_RATING = 10;
     public final static int FIVE_STARS = 5;
     public static final int ACTION_MOVIE_FILTER = 999;

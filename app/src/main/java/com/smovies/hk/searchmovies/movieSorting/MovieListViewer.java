@@ -23,21 +23,21 @@ public class MovieListViewer implements MovieListContract.Presenter, MovieListCo
     }
 
     @Override
-    public void getMoreData(int pageNo, int tabNumber) {
+    public void getMoreData(int pageNo, String query, int tabNumber) {
 
         if (movieListView != null) {
             movieListView.showProgress();
         }
-        movieListModel.getMovieList(this, pageNo, tabNumber);
+        movieListModel.getMovieList(this, query, pageNo, tabNumber);
     }
 
     @Override
-    public void requestDataFromServer(int tabNumber) {
+    public void requestDataFromServer(int tabNumber, String query) {
 
         if (movieListView != null) {
             movieListView.showProgress();
         }
-        movieListModel.getMovieList(this, 1, tabNumber);
+        movieListModel.getMovieList(this, query, 1, tabNumber);
     }
 
     @Override
