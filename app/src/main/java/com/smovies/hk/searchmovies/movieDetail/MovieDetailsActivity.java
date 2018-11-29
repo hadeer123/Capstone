@@ -218,7 +218,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
             updateFab(movie);
             movieName = movie.getTitle();
             tvMovieTitle.setText(movieName);
-
             tvMovieTitleSub.setText(movie.getTitle());
             tvMovieReleaseDate.setText(movie.getReleaseDate());
             tvMovieRatings.setText(String.valueOf(movie.getRating()));

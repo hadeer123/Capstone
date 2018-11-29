@@ -3,7 +3,7 @@
 
     <!-- fonts -->
     <dimen name="font_size_display">30dp</dimen>
-    <dimen name="font_size_title">19sp</dimen>
+    <dimen name="font_size_title">20sp</dimen>
     <dimen name="font_size_subheading">17sp</dimen>
     <dimen name="font_size_caption">16sp</dimen>
     <dimen name="font_size_body">15sp</dimen>
