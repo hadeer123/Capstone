@@ -11,6 +11,10 @@ public class Constants {
     public static final String YOUTUBE_WATCH_PATH = "watch";
     public static final String YOUTUBE_VI = "vi";
     public static final String IMG_0_JPG = "0.jpg";
+    public static final String IMDB_BASE_PATH = "/www.imdb.com";
+    public static final String IMDB_TITLE_PATH = "title";
+    public static final String TMDB_BASE_PATH = "/www.themoviedb.org";
+    public static final String MOVIE_PATH = "movie";
 
     public final static int PLAYING_NOW = 0;
     public final static int POPULAR = 1;

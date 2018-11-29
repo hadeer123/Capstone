@@ -118,7 +118,7 @@ public class LoadDBManager implements LoaderManager.LoaderCallbacks<Cursor> {
         String thisRunTimePath = cursor.getString(runTimeC);
 
 
-        return new Movie(thisId, thisTitle, thisReleaseDate, thisRatings, thisThumbPath, thisOverview, thisBackdropPath, thisRunTimePath, null, null);
+        return new Movie(thisId, thisTitle, thisReleaseDate, thisRatings, thisThumbPath, thisOverview, thisBackdropPath, thisRunTimePath, null, null, null);
     }
 
     public static class LoadDBMovies extends AsyncTaskLoader<Cursor> {

@@ -22,10 +22,4 @@
         android:title="@string/action_imdb"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/action_user_reviews"
-        android:orderInCategory="5"
-        android:title="@string/action_user_reviews"
-        app:showAsAction="never" />
-
 </menu>

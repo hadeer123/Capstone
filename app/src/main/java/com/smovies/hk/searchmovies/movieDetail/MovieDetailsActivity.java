@@ -1,5 +1,6 @@
 package com.smovies.hk.searchmovies.movieDetail;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -54,7 +56,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.smovies.hk.searchmovies.utils.Constants.BASE;
+import static com.smovies.hk.searchmovies.utils.Constants.IMDB_BASE_PATH;
+import static com.smovies.hk.searchmovies.utils.Constants.IMDB_TITLE_PATH;
 import static com.smovies.hk.searchmovies.utils.Constants.KEY_MOVIE_ID;
+import static com.smovies.hk.searchmovies.utils.Constants.MOVIE_PATH;
+import static com.smovies.hk.searchmovies.utils.Constants.TMDB_BASE_PATH;
 import static com.smovies.hk.searchmovies.utils.Constants.YOUTUBE_BASE_PATH;
 import static com.smovies.hk.searchmovies.utils.Constants.YOUTUBE_WATCH_PATH;
 import static com.smovies.hk.searchmovies.utils.GridSpacingItemDecoration.dpToPx;
@@ -90,14 +96,15 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     private MovieDetailViewer movieDetailsPresenter;
     private TrailersFragment trailersFragment;
     private List<Cast> castList;
+    private String imdbID;
 
 
     //@BindView(R.id.layout_movie_detail) ConstraintLayout mainContentLayout;
 
     private String movieName;
     private Movie movie;
-    private int movieID;
-
+    private Integer movieID;
+    private MenuItem imdbMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,6 +218,109 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
             trailersFragment.hideProgress();
     }
 
+    public static void shareMovie(Activity activity, int movieID, String movieName) {
+
+        URL shareURL = buildTMDBMovieURL(String.valueOf(movieID));
+        String shareText = null;
+        if (shareURL != null) {
+            shareText = movieName + " - " + shareURL.toString();
+        }
+
+        if (shareText != null) {
+            String mimeType = "text/plain";
+            ShareCompat.IntentBuilder
+                    .from(activity)
+                    .setType(mimeType)
+                    .setChooserTitle("Share: " + movieName)
+                    .setText(shareText)
+                    .startChooser();
+        }
+    }
+
+    private void updateFab(final Movie movie) {
+        sH.updateSaved(movie.getId(), fbFavorite, getApplicationContext(), SaveMovieDBHandler.FAV.SAVE_LIGHT.DEFAULT_VALUE_ID
+                , SaveMovieDBHandler.FAV.UNSAVE_LIGHT.DEFAULT_VALUE_ID, SaveMovieDBHandler.FAV_URI);
+        fbFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sH.ivDBOnClickHandler(movie, SaveMovieDBHandler.FAV_URI, null, fbFavorite, null, getBaseContext());
+            }
+        });
+    }
+
+    public void updateCastView(Movie movie) {
+        castList.clear();
+        castList.addAll(movie.getCredits().getCast());
+        castAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onResponseFailure(Throwable throwable) {
+        Snackbar.make(viewCoordinator, getString(R.string.error_data), Snackbar.LENGTH_LONG).show();
+        tvErrorMsg.setVisibility(View.VISIBLE);
+
+        if (trailersFragment != null)
+            trailersFragment.onResponseFailure(throwable);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        movieDetailsPresenter.onDestroy();
+    }
+
+    public static URL buildTMDBMovieURL(String movieId) {
+        Uri uri = new Uri.Builder()
+                .scheme(BASE)
+                .appendEncodedPath(TMDB_BASE_PATH)
+                .appendEncodedPath(MOVIE_PATH)
+                .appendEncodedPath(movieId)
+                .build();
+
+        try {
+            return new URL(uri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static void openIMDB(Context context, String imdbId) {
+        if (imdbId != null) {
+            URL url = buildIMDBURL(imdbId);
+            if (url != null) {
+                Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url.toString()));
+                context.startActivity(webIntent);
+            }
+        } else {
+            Toast.makeText(context, context.getResources().getString(R.string.imdb_link_not_available), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static URL buildIMDBURL(String imdbId) {
+        Uri uri = new Uri.Builder()
+                .scheme(BASE)
+                .appendEncodedPath(IMDB_BASE_PATH)
+                .appendEncodedPath(IMDB_TITLE_PATH)
+                .appendEncodedPath(imdbId)
+                .build();
+
+        try {
+            return new URL(uri.toString());
+        } catch (MalformedURLException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        return null;
+    }
+
     @Override
     public void setDataToViews(final Movie movie) {
         if (movie != null) {
@@ -225,6 +335,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
             tvMovieDescription.setText(movie.getOverview());
             ratingBar.setRating(movie.getRating());
 
+            imdbID = movie.getImdbId();
+            imdbMenuItem.setVisible(true);
 
             Glide.with(this)
                     .load(ApiClient.BACKDROP_BASE_URL + movie.getBackdropPath())
@@ -268,66 +380,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
 
     }
 
-    private void updateFab(final Movie movie) {
-        sH.updateSaved(movie.getId(), fbFavorite, getApplicationContext(), SaveMovieDBHandler.FAV.SAVE_LIGHT.DEFAULT_VALUE_ID
-                , SaveMovieDBHandler.FAV.UNSAVE_LIGHT.DEFAULT_VALUE_ID, SaveMovieDBHandler.FAV_URI);
-        fbFavorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sH.ivDBOnClickHandler(movie, SaveMovieDBHandler.FAV_URI, null, fbFavorite, null, getBaseContext());
-            }
-        });
-    }
-
-    public void updateCastView(Movie movie) {
-        castList.clear();
-        castList.addAll(movie.getCredits().getCast());
-        castAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onResponseFailure(Throwable throwable) {
-        Snackbar.make(viewCoordinator, getString(R.string.error_data), Snackbar.LENGTH_LONG).show();
-        tvErrorMsg.setVisibility(View.VISIBLE);
-
-        if(trailersFragment != null)
-            trailersFragment.onResponseFailure(throwable);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        movieDetailsPresenter.onDestroy();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_movie_detail, menu);
-
-        menu.findItem(R.id.action_toWatch).setIcon(sH.updateSavedResource(movieID, getApplicationContext(), SaveMovieDBHandler.TO_WATCH.SAVE_LIGHT.DEFAULT_VALUE_ID,
-                SaveMovieDBHandler.TO_WATCH.UNSAVE_LIGHT.DEFAULT_VALUE_ID, SaveMovieDBHandler.TO_WATCH_URI));
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_toWatch:
-                updateToWatchTable(item);
-                return true;
-            case R.id.action_share:
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void updateToWatchTable(MenuItem item) {
         if (movie != null)
             sH.ivDBOnClickHandler(movie, SaveMovieDBHandler.TO_WATCH_URI, null, null, item, getApplicationContext());
@@ -362,6 +414,36 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
                 }
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_movie_detail, menu);
+        imdbMenuItem = menu.findItem(R.id.action_imdb);
+        menu.findItem(R.id.action_toWatch).setIcon(sH.updateSavedResource(movieID, getApplicationContext(), SaveMovieDBHandler.TO_WATCH.SAVE_LIGHT.DEFAULT_VALUE_ID,
+                SaveMovieDBHandler.TO_WATCH.UNSAVE_LIGHT.DEFAULT_VALUE_ID, SaveMovieDBHandler.TO_WATCH_URI));
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_toWatch:
+                updateToWatchTable(item);
+                return true;
+            case R.id.action_imdb:
+                if (imdbID.isEmpty()) {
+                    item.setVisible(false);
+                } else {
+                    openIMDB(getApplicationContext(), imdbID);
+                }
+                return true;
+            case R.id.action_share:
+                shareMovie(this, movieID, movieName);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public static URL buildYouTubeURL(String key) {

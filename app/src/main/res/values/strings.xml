@@ -126,5 +126,6 @@
     <string name="title_notifications">Notifications</string>
     <string name="empty_poster">movie poster</string>
     <string name="desc_app_icon">app icon</string>
+    <string name="imdb_link_not_available">IMDB Link not available.</string>
 </resources>
 

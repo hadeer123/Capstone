@@ -2,8 +2,6 @@ package com.smovies.hk.searchmovies.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 public class Movie {
     private int id;
 
@@ -39,7 +37,11 @@ public class Movie {
     @SerializedName("homepage")
     private String homepage;
 
-    public Movie(int id, String title, String releaseDate, float rating, String thumbPath, String overview, String backdropPath, Credits credits, Videos videos, String runTime, String tagline, String homepage) {
+
+    @SerializedName("imdb_id")
+    private String imdbId;
+
+    public Movie(int id, String title, String releaseDate, float rating, String thumbPath, String overview, String backdropPath, Credits credits, Videos videos, String runTime, String tagline, String homepage, String imdbId) {
         this.id = id;
         this.title = title;
         this.releaseDate = releaseDate;
@@ -52,9 +54,10 @@ public class Movie {
         this.runTime = runTime;
         this.tagline = tagline;
         this.homepage = homepage;
+        this.imdbId = imdbId;
     }
 
-    public Movie(int id, String title, String releaseDate, float rating, String thumbPath, String overview, String backdropPath, String runTime, String tagline, String homepage) {
+    public Movie(int id, String title, String releaseDate, float rating, String thumbPath, String overview, String backdropPath, String runTime, String tagline, String homepage, String imdbId) {
         this.id = id;
         this.title = title;
         this.releaseDate = releaseDate;
@@ -65,6 +68,7 @@ public class Movie {
         this.runTime = runTime;
         this.tagline = tagline;
         this.homepage = homepage;
+        this.imdbId = imdbId;
     }
 
     public int getId() {
@@ -163,6 +167,14 @@ public class Movie {
         this.homepage = homepage;
     }
 
+    public String getImdbId() {
+        return imdbId;
+    }
+
+    public void setImdbId(String imdbId) {
+        this.imdbId = imdbId;
+    }
+
     @Override
     public String toString() {
         return "Movie{" +
@@ -178,6 +190,7 @@ public class Movie {
                 ", runTime='" + runTime + '\'' +
                 ", tagline='" + tagline + '\'' +
                 ", homepage='" + homepage + '\'' +
+                ", imdbId='" + imdbId + '\'' +
                 '}';
     }
 }
