@@ -3,19 +3,21 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:showIn="navigation_view">
 
-        <item
-            android:id="@+id/nav_now_playing"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:checkable="true"
-            android:title="@string/nav_now_playing_t"/>
+    <item
+        android:id="@+id/nav_now_playing"
+        android:checkable="true"
+        android:checked="false"
+        android:enabled="true"
+        android:icon="@drawable/ic_now_playing_accent_24dp"
+        android:title="@string/nav_now_playing_t"/>
         <item
             android:id="@+id/nav_popular"
-            android:icon="@drawable/ic_whatshot_black_24dp"
+            android:icon="@drawable/ic_whatshot_accent_24dp"
             android:checkable="true"
             android:title="@string/nav_popular_t"/>
         <item
             android:id="@+id/nav_toprated"
-            android:icon="@drawable/ic_top_rated_yellow_24dp"
+            android:icon="@drawable/ic_top_rated_accent_24dp"
             android:checkable="true"
             android:title="@string/nav_top_rated_t"/>
 
@@ -24,12 +26,12 @@
         <menu>
             <item
                 android:id="@+id/nav_favorite"
-                android:icon="@drawable/ic_favorite_red_24dp"
+                android:icon="@drawable/ic_favorite_accent_full_24dp"
                 android:checkable="true"
                 android:title="@string/nav_favorites_t"/>
             <item
                 android:id="@+id/nav_to_watch"
-                android:icon="@drawable/ic_playlist_add_black_24dp"
+                android:icon="@drawable/ic_to_watch_accent_24dp"
                 android:checkable="true"
                 android:title="@string/nav_to_watch_t"/>
         </menu>
@@ -40,7 +42,7 @@
             <item
                 android:id="@+id/nav_signout"
                 android:checkable="false"
-                android:icon="@drawable/ic_exit_to_app_black_24dp"
+                android:icon="@drawable/ic_logout_dark_24dp"
                 android:title="@string/nav_logout"/>
         </menu>
     </item>

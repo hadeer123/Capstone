@@ -14,10 +14,10 @@
 
         <FrameLayout
             android:id="@+id/layout_cast_photo"
-            android:layout_width="100dp"
-            android:layout_height="150dp"
+            android:layout_width="@dimen/activity_detail_film_cast_portait_width"
+            android:layout_height="@dimen/activity_detail_film_cast_portait_hight"
             android:layout_alignParentTop="true"
-            android:background="@color/colorViewBg">
+            android:background="@color/backgroundColorLight">
 
             <ImageView
                 android:layout_width="match_parent"

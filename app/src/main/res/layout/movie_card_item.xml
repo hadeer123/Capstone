@@ -6,8 +6,9 @@
                                     android:layout_gravity="center"
                                     android:layout_margin="@dimen/card_margin"
                                     android:elevation="@dimen/card_elevation"
+                                    android:foreground="?android:attr/selectableItemBackground"
                                     app:cardCornerRadius="@dimen/card_album_radius">
-    <!--android:foreground="?android:attr/selectableItemBackground"-->
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -26,6 +27,7 @@
                 android:layout_height="@dimen/movie_thumb_height"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
+                android:alpha="0.99"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/hold_movie_thumbnail"
                 android:scaleType="fitXY"/>
@@ -38,16 +40,19 @@
                 android:visibility="visible"/>
         </RelativeLayout>
 
+
         <ImageView
             android:id="@+id/iv_add_fav"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/layout_movie_description_margin"
+            android:layout_marginStart="@dimen/layout_movie_description_margin"
+            android:layout_marginTop="@dimen/layout_movie_description_margin"
+            android:background="@drawable/shadow"
+            android:elevation="@dimen/card_elevation"
             android:contentDescription="@string/img_add_fav_thumbnail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -57,22 +62,21 @@
 
         <ImageView
             android:id="@+id/iv_add_to_watch"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_margin="@dimen/layout_movie_description_margin"
+            android:background="@drawable/shadow"
             android:contentDescription="@string/to_watch_icon"
+            android:elevation="@dimen/card_elevation"
             app:layout_constraintBottom_toBottomOf="@+id/rl_movie_thumb"
             app:layout_constraintEnd_toEndOf="@+id/rl_movie_thumb"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/rl_movie_thumb"
             app:layout_constraintTop_toBottomOf="@+id/iv_add_fav"
             app:layout_constraintVertical_bias="0.922"
-            app:srcCompat="@drawable/ic_add_circle_outline_24dp"/>
+            app:srcCompat="@drawable/ic_add_circle_outline_white_24dp"/>
 
 
         <TextView
@@ -81,16 +85,14 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_movie_thumb"
             android:layout_marginBottom="4dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginEnd="@dimen/layout_movie_description_margin"
+            android:layout_marginStart="@dimen/layout_movie_description_margin"
             android:ellipsize="end"
             android:maxLines="1"
             android:paddingLeft="@dimen/card_content_padding"
             android:paddingRight="@dimen/card_content_padding"
             android:paddingTop="@dimen/card_content_padding"
             android:textAppearance="@style/Body"
-            android:textColor="@color/colorTitle"
-            android:typeface="sans"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -101,8 +103,8 @@
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginEnd="@dimen/layout_movie_description_margin"
+            android:layout_marginStart="@dimen/layout_movie_description_margin"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/card_content_padding"
             android:paddingLeft="@dimen/card_content_padding"

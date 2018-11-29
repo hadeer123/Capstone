@@ -3,9 +3,9 @@ package com.smovies.hk.searchmovies.movieDetail;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,14 +16,16 @@ import android.widget.TextView;
 import com.smovies.hk.searchmovies.R;
 import com.smovies.hk.searchmovies.model.Movie;
 import com.smovies.hk.searchmovies.model.Video;
+import com.smovies.hk.searchmovies.utils.GridSpacingItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.smovies.hk.searchmovies.utils.Constants.KEY_MOVIE_ID;
+import static com.smovies.hk.searchmovies.utils.GridSpacingItemDecoration.dpToPx;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,10 +74,12 @@ public class TrailersFragment extends Fragment{
 
     private void initUI() {
         videos = new ArrayList<>();
-
         videoGridAdapter = new VideoGridAdapter(this, videos);
-        LinearLayoutManager mVideoLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        rvVideo.setLayoutManager(mVideoLayoutManager);
+
+        GridLayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1, GridLayoutManager.HORIZONTAL, true);
+        rvVideo.setLayoutManager(mLayoutManager);
+        rvVideo.addItemDecoration(new GridSpacingItemDecoration(1, dpToPx(Objects.requireNonNull(getContext()), 5), true));
+        rvVideo.setItemAnimator(new DefaultItemAnimator());
         rvVideo.setAdapter(videoGridAdapter);
     }
 

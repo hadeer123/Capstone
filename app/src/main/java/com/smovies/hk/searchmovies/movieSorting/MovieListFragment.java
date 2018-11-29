@@ -2,12 +2,14 @@ package com.smovies.hk.searchmovies.movieSorting;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +46,9 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
     private static final String TAG = MovieListFragment.class.getSimpleName();
     private static final String ARG_SECTION_NUMBER = "section_number";
     public static final String ARGS_SEARCH_QUERY = "search_query";
+    private static final int SPAN_COUNT_PORTRAIT = 2;
+    private static final int SPAN_COUNT_LANDSCAPE = 4;
+    private static final int PADDING_DP = 10;
 
     int firstVisibleItem, visibleItemCount, totalItemCount;
     @BindView(R.id.rv_movie_list) RecyclerView rvMovieList;
@@ -102,13 +107,31 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
     private void initUI() {
         moviesList = new ArrayList<>();
         moviesAdapter = new MoviesAdapter(this, moviesList);
-        GridSetup();
+        int currentOrientation = getResources().getConfiguration().orientation;
+        int spanCount = SPAN_COUNT_PORTRAIT;
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        float density = displayMetrics.xdpi;
+
+        if (density <= 600 && density >= 480) {
+            spanCount = SPAN_COUNT_PORTRAIT + 1;
+        } else if (density > 600) {
+            spanCount = SPAN_COUNT_LANDSCAPE;
+        }
+
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // Landscape
+            spanCount = SPAN_COUNT_LANDSCAPE;
+        }
+        GridSetup(spanCount);
     }
 
-    private void GridSetup() {
-        mLayoutManager = new GridLayoutManager(getContext(), 2);
+    private void GridSetup(int spanCount) {
+        mLayoutManager = new GridLayoutManager(getContext(), spanCount);
         rvMovieList.setLayoutManager(mLayoutManager);
-        rvMovieList.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(Objects.requireNonNull(getContext()), 10), true));
+        rvMovieList.addItemDecoration(new GridSpacingItemDecoration(spanCount, dpToPx(Objects.requireNonNull(getContext()), PADDING_DP), true));
         rvMovieList.setItemAnimator(new DefaultItemAnimator());
         rvMovieList.setAdapter(moviesAdapter);
     }
@@ -230,6 +253,7 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
         initUI();
         setListeners();
         movieListViewer = new MovieListViewer(this);
+        getActivity().setTitle(R.string.app_name);
         switch (tabNumber) {
             case PLAYING_NOW:
             case POPULAR:
@@ -240,12 +264,21 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
                 movieListViewer.requestDataFromServer(tabNumber, queryString);
                 break;
             case FAV_LIST:
+                getActivity().setTitle(R.string.nav_favorites_t);
+                movieListViewer.requestDataFromDB(tabNumber, getContext(), this);
+                break;
             case TO_WATCH_LIST:
+                getActivity().setTitle(R.string.nav_to_watch_t);
                 movieListViewer.requestDataFromDB(tabNumber, getContext(), this);
                 break;
         }
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
 }

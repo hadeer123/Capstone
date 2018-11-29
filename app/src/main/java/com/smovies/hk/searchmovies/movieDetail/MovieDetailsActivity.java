@@ -12,7 +12,8 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -41,11 +42,13 @@ import com.smovies.hk.searchmovies.model.Cast;
 import com.smovies.hk.searchmovies.model.Movie;
 import com.smovies.hk.searchmovies.model.Video;
 import com.smovies.hk.searchmovies.network.ApiClient;
+import com.smovies.hk.searchmovies.utils.GridSpacingItemDecoration;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,6 +57,7 @@ import static com.smovies.hk.searchmovies.utils.Constants.BASE;
 import static com.smovies.hk.searchmovies.utils.Constants.KEY_MOVIE_ID;
 import static com.smovies.hk.searchmovies.utils.Constants.YOUTUBE_BASE_PATH;
 import static com.smovies.hk.searchmovies.utils.Constants.YOUTUBE_WATCH_PATH;
+import static com.smovies.hk.searchmovies.utils.GridSpacingItemDecoration.dpToPx;
 
 public class MovieDetailsActivity extends AppCompatActivity implements MovieDetailContract.View, TrailersFragment.OnFragmentInteractionListener{
     private static final String TAG = MovieDetailsActivity.class.getSimpleName();
@@ -147,8 +151,10 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
         castList = new ArrayList<>();
         castAdapter = new CastAdapter(this, castList);
 
-        LinearLayoutManager mCastLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        rvCast.setLayoutManager(mCastLayoutManager);
+        GridLayoutManager mLayoutManager = new GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, true);
+        rvCast.setLayoutManager(mLayoutManager);
+        rvCast.addItemDecoration(new GridSpacingItemDecoration(1, dpToPx(Objects.requireNonNull(this), 5), true));
+        rvCast.setItemAnimator(new DefaultItemAnimator());
         rvCast.setAdapter(castAdapter);
 
         movieDetailsPresenter = new MovieDetailViewer(this);
@@ -264,8 +270,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     }
 
     private void updateFab(final Movie movie) {
-        sH.updateSaved(movie.getId(), fbFavorite, getApplicationContext(), SaveMovieDBHandler.FAV.SAVE.DEFAULT_VALUE_ID
-                , SaveMovieDBHandler.FAV.UNSAVE.DEFAULT_VALUE_ID, SaveMovieDBHandler.FAV_URI);
+        sH.updateSaved(movie.getId(), fbFavorite, getApplicationContext(), SaveMovieDBHandler.FAV.SAVE_LIGHT.DEFAULT_VALUE_ID
+                , SaveMovieDBHandler.FAV.UNSAVE_LIGHT.DEFAULT_VALUE_ID, SaveMovieDBHandler.FAV_URI);
         fbFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -305,8 +311,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_movie_detail, menu);
 
-        menu.findItem(R.id.action_toWatch).setIcon(sH.updateSavedResource(movieID, getApplicationContext(), SaveMovieDBHandler.TO_WATCH.SAVE.DEFAULT_VALUE_ID,
-                SaveMovieDBHandler.TO_WATCH.UNSAVE.DEFAULT_VALUE_ID, SaveMovieDBHandler.TO_WATCH_URI));
+        menu.findItem(R.id.action_toWatch).setIcon(sH.updateSavedResource(movieID, getApplicationContext(), SaveMovieDBHandler.TO_WATCH.SAVE_LIGHT.DEFAULT_VALUE_ID,
+                SaveMovieDBHandler.TO_WATCH.UNSAVE_LIGHT.DEFAULT_VALUE_ID, SaveMovieDBHandler.TO_WATCH_URI));
 
         return super.onCreateOptionsMenu(menu);
     }

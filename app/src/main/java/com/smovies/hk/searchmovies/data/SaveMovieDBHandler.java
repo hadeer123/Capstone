@@ -85,14 +85,16 @@ public class SaveMovieDBHandler {
 
         if (imageView == null) {
             if (uri.equals(FAV_URI))
-                updateSaved(movieID, floatingActionButton, mContext, FAV.SAVE.DEFAULT_VALUE_ID, FAV.UNSAVE.DEFAULT_VALUE_ID, FAV_URI);
+                updateSaved(movieID, floatingActionButton, mContext, FAV.SAVE_LIGHT.DEFAULT_VALUE_ID, FAV.UNSAVE_LIGHT.DEFAULT_VALUE_ID, FAV_URI);
+            else
+                updateSaved(movieID, menuItem, mContext, TO_WATCH.SAVE_LIGHT.DEFAULT_VALUE_ID, TO_WATCH.UNSAVE_LIGHT.DEFAULT_VALUE_ID, TO_WATCH_URI);
         } else if (menuItem == null) {
             if (uri.equals(FAV_URI))
-                updateSaved(movieID, imageView, mContext, FAV.SAVE.DEFAULT_VALUE_ID, FAV.UNSAVE.DEFAULT_VALUE_ID, FAV_URI);
+                updateSaved(movieID, imageView, mContext, FAV.SAVE_LIGHT.DEFAULT_VALUE_ID, FAV.UNSAVE_LIGHT.DEFAULT_VALUE_ID, FAV_URI);
             else
-                updateSaved(movieID, imageView, mContext, TO_WATCH.SAVE.DEFAULT_VALUE_ID, TO_WATCH.UNSAVE.DEFAULT_VALUE_ID, TO_WATCH_URI);
+                updateSaved(movieID, imageView, mContext, TO_WATCH.SAVE_LIGHT.DEFAULT_VALUE_ID, TO_WATCH.UNSAVE_LIGHT.DEFAULT_VALUE_ID, TO_WATCH_URI);
         } else
-            updateSaved(movieID, menuItem, mContext, TO_WATCH.SAVE.DEFAULT_VALUE_ID, TO_WATCH.UNSAVE.DEFAULT_VALUE_ID, TO_WATCH_URI);
+            updateSaved(movieID, menuItem, mContext, TO_WATCH.SAVE_LIGHT.DEFAULT_VALUE_ID, TO_WATCH.UNSAVE_LIGHT.DEFAULT_VALUE_ID, TO_WATCH_URI);
     }
 
     public void saveToDB(ImageView imageView, FloatingActionButton floatingActionButton, MenuItem menuItem, Movie movie, Uri path, Context mContext) {
@@ -102,7 +104,7 @@ public class SaveMovieDBHandler {
         Uri uri = mContext.getContentResolver().insert(path, contentValues);
 
         if (uri != null) {
-            Toast.makeText(mContext, uri.toString() + mContext.getString(R.string.saved_msg), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, mContext.getString(R.string.saved_msg), Toast.LENGTH_SHORT).show();
             updateViewAfterAction(imageView, floatingActionButton, menuItem, movie.getId(), path, mContext);
         }
     }
@@ -130,7 +132,8 @@ public class SaveMovieDBHandler {
     }
 
     public void updateSaved(int movieID, FloatingActionButton floatingActionButton, Context mContext, int savedId, int unsavedId, Uri uri) {
-        floatingActionButton.setImageResource(updateSavedResource(movieID, mContext, savedId, unsavedId, uri));
+        int imgRes = updateSavedResource(movieID, mContext, savedId, unsavedId, uri);
+        floatingActionButton.setImageResource(imgRes);
     }
 
     public void updateSaved(int movieID, MenuItem menuItem, Context mContext, int savedId, int unsavedId, Uri uri) {
@@ -138,8 +141,11 @@ public class SaveMovieDBHandler {
     }
 
     public enum FAV {
-        SAVE(R.mipmap.ic_fav_full),
-        UNSAVE(R.mipmap.ic_fav_empty);
+        SAVE(R.drawable.ic_favorite_accent_full_24dp),
+        UNSAVE(R.drawable.ic_favorite_border_accent_24dp),
+
+        SAVE_LIGHT(R.drawable.ic_favorite_full_white_24dp),
+        UNSAVE_LIGHT(R.drawable.ic_favorite_border_white_24dp);
         public final int DEFAULT_VALUE_ID;
 
         FAV(int default_value_id) {
@@ -148,9 +154,11 @@ public class SaveMovieDBHandler {
     }
 
     public enum TO_WATCH {
-        SAVE(R.mipmap.ic_plus_full),
-        UNSAVE(R.mipmap.ic_plus_empty);
+        SAVE(R.drawable.ic_add_circle_full_accent_24dp),
+        UNSAVE(R.drawable.ic_add_circle_outline_accent_24dp),
 
+        SAVE_LIGHT(R.drawable.ic_add_circle_full_white_24dp),
+        UNSAVE_LIGHT(R.drawable.ic_add_circle_outline_white_24dp);
         public final int DEFAULT_VALUE_ID;
 
         TO_WATCH(int default_value_id) {

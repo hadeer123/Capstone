@@ -73,12 +73,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
         final SaveMovieDBHandler singleton = SaveMovieDBHandler.singleton();
 
         singleton.updateSaved(movie.getId(), holder.ivAddFav,
-                context, SaveMovieDBHandler.FAV.SAVE.DEFAULT_VALUE_ID
-                , SaveMovieDBHandler.FAV.UNSAVE.DEFAULT_VALUE_ID, SaveMovieDBHandler.FAV_URI);
+                context, SaveMovieDBHandler.FAV.SAVE_LIGHT.DEFAULT_VALUE_ID
+                , SaveMovieDBHandler.FAV.UNSAVE_LIGHT.DEFAULT_VALUE_ID, SaveMovieDBHandler.FAV_URI);
 
         singleton.updateSaved(movie.getId(), holder.ivAddToWatch,
-                context, SaveMovieDBHandler.TO_WATCH.SAVE.DEFAULT_VALUE_ID
-                , SaveMovieDBHandler.TO_WATCH.UNSAVE.DEFAULT_VALUE_ID, SaveMovieDBHandler.TO_WATCH_URI);
+                context, SaveMovieDBHandler.TO_WATCH.SAVE_LIGHT.DEFAULT_VALUE_ID
+                , SaveMovieDBHandler.TO_WATCH.UNSAVE_LIGHT.DEFAULT_VALUE_ID, SaveMovieDBHandler.TO_WATCH_URI);
 
         // loading album cover using Glide library
         Glide.with(context)

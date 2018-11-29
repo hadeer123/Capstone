@@ -21,6 +21,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -43,9 +45,6 @@ import static com.smovies.hk.searchmovies.utils.Constants.TO_WATCH_LIST;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
-    //TODO fix appbar title with transition between fragments and activities
-    //TODO max fav and to watch fragments unswipable
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -54,7 +53,9 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.nav_view) NavigationView navigationView;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
+    @BindView(R.id.fragment_container) FrameLayout fragmentContainer;
 
+    TextView tvUsername, tvEmail;
     /**
      * The {@link PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -77,9 +78,34 @@ public class MainActivity extends AppCompatActivity
 
         navigationDrawerSetup(toolbar);
 
+        tvUsername = findViewById(R.id.nav_head_username);
+        tvEmail = findViewById(R.id.nav_head_email);
+
         tabsSetup();
+
+        userAccountSetup();
+
+        if (fragmentContainer.getVisibility() == View.GONE)
+            setTitle(R.string.app_name);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    private void userAccountSetup() {
+        if (getIntent().hasExtra(getString(R.string.key_username))) {
+            tvEmail.setText(getIntent().getStringExtra(getString(R.string.key_user_email)));
+            tvUsername.setText(getIntent().getStringExtra(getString(R.string.key_username)));
+        }
+    }
     private void navigationDrawerSetup(Toolbar toolbar) {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -96,41 +122,11 @@ public class MainActivity extends AppCompatActivity
         // Set up the ViewPager with the sections adapter.
         mViewPager.setAdapter(mSectionsPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {
-
-            }
-
-            @Override
-            public void onPageSelected(int i) {
-                switch (i) {
-                    case FAV_LIST:
-                        setTitle(getString(R.string.nav_favorites_t));
-                        break;
-                    case TO_WATCH_LIST:
-                        setTitle(getString(R.string.nav_to_watch_t));
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
-        });
 
         //set icons in tab layout
-        Objects.requireNonNull(tabLayout.getTabAt(PLAYING_NOW)).setIcon(R.drawable.ic_menu_slideshow);
-        Objects.requireNonNull(tabLayout.getTabAt(POPULAR)).setIcon(R.drawable.ic_whatshot_black_24dp);
-        Objects.requireNonNull(tabLayout.getTabAt(TOP_RATED)).setIcon(R.drawable.ic_top_rated_yellow_24dp);
-
-        //remove last two tabs (Favorites & TO Watch)
-        tabLayout.removeTabAt(tabLayout.getTabCount() - 1);
-        tabLayout.removeTabAt(tabLayout.getTabCount() - 1);
-
+        Objects.requireNonNull(tabLayout.getTabAt(PLAYING_NOW)).setIcon(R.drawable.ic_now_playing_accent_24dp);
+        Objects.requireNonNull(tabLayout.getTabAt(POPULAR)).setIcon(R.drawable.ic_whatshot_accent_24dp);
+        Objects.requireNonNull(tabLayout.getTabAt(TOP_RATED)).setIcon(R.drawable.ic_top_rated_accent_24dp);
     }
 
     @Override
@@ -182,36 +178,43 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_now_playing:
+                updateVisibly();
                 mViewPager.setCurrentItem(PLAYING_NOW);
-                updateTabVisibility();
                 break;
             case R.id.nav_popular:
+                updateVisibly();
                 mViewPager.setCurrentItem(POPULAR);
-                updateTabVisibility();
                 break;
             case R.id.nav_toprated:
+                updateVisibly();
                 mViewPager.setCurrentItem(TOP_RATED);
-                updateTabVisibility();
                 break;
             case R.id.nav_favorite:
-                mViewPager.setCurrentItem(FAV_LIST);
-                tabLayout.setVisibility(View.GONE);
-                navigationView.setCheckedItem(R.id.nav_favorite);
+                createFragments(FAV_LIST);
                 break;
             case R.id.nav_to_watch:
-                mViewPager.setCurrentItem(TO_WATCH_LIST);
-                tabLayout.setVisibility(View.GONE);
-                navigationView.setCheckedItem(R.id.nav_to_watch);
+                createFragments(TO_WATCH_LIST);
                 break;
             case R.id.nav_signout:
                 signOutFromApp();
             default:
                 mViewPager.setCurrentItem(PLAYING_NOW);
-                updateTabVisibility();
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void createFragments(int position) {
+
+        MovieListFragment fragment = MovieListFragment.newInstance(position);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment).commit();
+
+        fragmentContainer.setVisibility(View.VISIBLE);
+        mViewPager.setVisibility(View.GONE);
+        tabLayout.setVisibility(View.GONE);
+
     }
 
     private void signOutFromApp() {
@@ -224,11 +227,14 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    public void updateTabVisibility() {
-        if (tabLayout.getVisibility() == View.GONE)
+    private void updateVisibly() {
+        if (mViewPager.getVisibility() == View.GONE) {
+            mViewPager.setVisibility(View.VISIBLE);
             tabLayout.setVisibility(View.VISIBLE);
+            fragmentContainer.setVisibility(View.GONE);
+            setTitle(R.string.app_name);
+        }
     }
-
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -241,25 +247,17 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public Fragment getItem(int position) {
+            updateVisibly();
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            updateVisibility(position);
-
             return MovieListFragment.newInstance(position);
         }
 
-        public void updateVisibility(int position) {
-            if (position > 3) {
-                tabLayout.setVisibility(View.GONE);
-            } else {
-                updateTabVisibility();
-            }
-        }
 
         @Override
         public int getCount() {
-            // Show 5 total pages.
-            return 5;
+            // Show 3 total pages.
+            return 3;
         }
 
         @Override

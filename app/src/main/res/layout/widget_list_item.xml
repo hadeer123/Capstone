@@ -12,17 +12,17 @@
     <ImageView
         android:id="@+id/iv_movie_thumb"
         android:layout_width="wrap_content"
-        android:layout_height="150dp"
+        android:layout_height="@dimen/widget_poster_height"
         android:adjustViewBounds="true"
-        android:contentDescription="TODO"
+        android:contentDescription="@string/poster_image"
         android:scaleType="fitXY"
         android:src="@drawable/ic_empty_movies"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginLeft="@dimen/widget_margin"
+        android:layout_marginStart="@dimen/widget_margin"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -30,13 +30,12 @@
             android:id="@+id/movie_title_tv_w"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:singleLine="false"
-            android:text="TEXT TEXT"/>
+            android:singleLine="false"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/widget_margin"
             android:orientation="horizontal">
 
             <TextView
@@ -49,7 +48,7 @@
                 android:id="@+id/tv_release_date"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="@dimen/widget_margin"
                 android:gravity="center_vertical"
                 android:textStyle="normal"/>
 

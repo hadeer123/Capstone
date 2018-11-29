@@ -9,10 +9,10 @@
 
     <TextView
         android:id="@+id/trailer_tv"
+        style="@style/SubHeading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/trailers_text_view"
-        android:textAppearance="@style/SubHeading"
         app:layout_constraintBottom_toTopOf="@id/recycler_view_video_grid"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.023"

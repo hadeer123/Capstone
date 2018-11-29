@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SearchMovies</string>
+    <string name="app_name">Search Movies</string>
 
 
     <!--Navigation menu-->
@@ -84,8 +84,6 @@
     <string name="disconnect">Disconnect</string>
     <string name="refresh_token">Get Fresh Token</string>
 
-    <!-- Content Description for images -->
-    <string name="desc_google_icon">Google Logo</string>
 
     <!-- Rationale for asking for Contacts -->
     <string name="contacts_permission_rationale">Contacts access is needed in order to retrieve your email address.</string>
@@ -112,7 +110,7 @@
     <!-- Server Client ID.  This should be a valid Web OAuth 2.0 Client ID obtained
          from https://console.developers.google.com/ -->
     <string name="server_client_id">313741937817-ed3au9lmi18ktlugpr8ead07nmm7cjnc.apps.googleusercontent.com</string>
-    <string name="login_title_text"><![CDATA[<string name=\"tGoogle Sign-In\\nQuickstart]]></string>
+    <string name="sign_in_activity_title_text">Search Movies</string>
     <string name="nav_account">Account</string>
     <string name="key_username">Key_username</string>
     <string name="key_user_email">Key_user_email</string>
@@ -126,5 +124,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="empty_poster">movie poster</string>
+    <string name="desc_app_icon">app icon</string>
 </resources>
 
