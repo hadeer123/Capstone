@@ -28,16 +28,16 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.smovies.hk.searchmovies.utils.Constants.GET_MOVIES;
 import static com.smovies.hk.searchmovies.utils.Constants.TOP_RATED;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMoviesViewHolder> {
-    private static final String TAG = MoviesAdapter.class.getSimpleName();
     private MovieListFragment movieListFragment;
     private List<Movie> movieList;
     private int tabNumber;
     private Context mContext;
 
-    public MoviesAdapter(MovieListFragment movieListFragment, List<Movie> movieList, int tabNumber) {
+    MoviesAdapter(MovieListFragment movieListFragment, List<Movie> movieList, int tabNumber) {
         this.movieListFragment = movieListFragment;
         this.movieList = movieList;
         this.tabNumber = tabNumber;
@@ -54,8 +54,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ListMoviesViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ListMoviesViewHolder holder, int position) {
 
+        position = holder.getAdapterPosition();
         final Movie movie = movieList.get(position);
 
 
@@ -99,10 +100,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
                 .apply(new RequestOptions().placeholder(R.drawable.ic_empty_movies).error(R.drawable.ic_empty_movies))
                 .into(holder.ivMovieThumb);
 
+        final int finalPosition = position;
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                movieListFragment.onMovieItemClick(position);
+                movieListFragment.onMovieItemClick(finalPosition);
             }
         });
 
@@ -127,7 +129,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
     }
 
     private void updateImgViewVisibility(@NonNull ListMoviesViewHolder holder) {
-        if (tabNumber > TOP_RATED) {
+        if (tabNumber > TOP_RATED && tabNumber != GET_MOVIES) {
             holder.ivAddFav.setVisibility(View.GONE);
             holder.ivAddToWatch.setVisibility(View.GONE);
         } else {
@@ -142,7 +144,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
     }
 
 
-    public class ListMoviesViewHolder extends RecyclerView.ViewHolder {
+    class ListMoviesViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.tv_movie_title) TextView tvMovieTitle;
         @BindView(R.id.tv_movie_ratings) TextView tvMovieRatings;
@@ -152,7 +154,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
         @BindView(R.id.iv_add_fav) ImageView ivAddFav;
         @BindView(R.id.pb_load_image) ProgressBar pbLoadImage;
 
-        public ListMoviesViewHolder(View itemView) {
+        ListMoviesViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

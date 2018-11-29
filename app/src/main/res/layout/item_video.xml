@@ -13,6 +13,7 @@
         android:layout_width="@dimen/item_video_grid_layout_width"
         android:layout_height="@dimen/item_video_grid_layout_height"
         android:layout_margin="@dimen/item_video_grid_layout_margin">
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

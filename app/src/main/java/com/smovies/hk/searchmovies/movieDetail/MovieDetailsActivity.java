@@ -21,7 +21,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -45,7 +44,7 @@ import com.smovies.hk.searchmovies.model.Cast;
 import com.smovies.hk.searchmovies.model.Movie;
 import com.smovies.hk.searchmovies.model.Video;
 import com.smovies.hk.searchmovies.network.ApiClient;
-import com.smovies.hk.searchmovies.utils.GridSpacingItemDecoration;
+import com.smovies.hk.searchmovies.utils.GridItemSpacing;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -64,13 +63,11 @@ import static com.smovies.hk.searchmovies.utils.Constants.MOVIE_PATH;
 import static com.smovies.hk.searchmovies.utils.Constants.TMDB_BASE_PATH;
 import static com.smovies.hk.searchmovies.utils.Constants.YOUTUBE_BASE_PATH;
 import static com.smovies.hk.searchmovies.utils.Constants.YOUTUBE_WATCH_PATH;
-import static com.smovies.hk.searchmovies.utils.GridSpacingItemDecoration.dpToPx;
+import static com.smovies.hk.searchmovies.utils.GridItemSpacing.dpToPx;
 
-public class MovieDetailsActivity extends AppCompatActivity implements MovieDetailContract.View, TrailersFragment.OnFragmentInteractionListener{
+public class MovieDetailsActivity extends AppCompatActivity implements MovieDetailContract.View, TrailersFragment.OnFragmentInteractionListener {
     private static final String TAG = MovieDetailsActivity.class.getSimpleName();
     private static final SaveMovieDBHandler sH = SaveMovieDBHandler.singleton();
-    private PublisherInterstitialAd mPublisherInterstitialAd;
-
     @BindView(R.id.image_view_poster) ImageView ivPoster;
     @BindView(R.id.progress_bar_cast) ProgressBar pbLoadCast;
     @BindView(R.id.btn_fav) FloatingActionButton fbFavorite;
@@ -84,7 +81,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     @BindView(R.id.rating_bar) RatingBar ratingBar;
     @BindView(R.id.recycler_view_cast) RecyclerView rvCast;
     @BindView(R.id.text_view_error_message) TextView tvErrorMsg;
-
     @BindView(R.id.iv_backdrop) ImageView ivBackdrop;
     @BindView(R.id.movie_title_tv) TextView tvMovieTitle;
     @BindView(R.id.pb_load_backdrop) ProgressBar pbLoadBackdrop;
@@ -94,8 +90,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     @BindView(R.id.appbar) AppBarLayout appBarLayout;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.layout_movie_detail) ConstraintLayout clMovieDetail;
-
-
+    private PublisherInterstitialAd mPublisherInterstitialAd;
     private CastAdapter castAdapter;
     private MovieDetailViewer movieDetailsPresenter;
     private TrailersFragment trailersFragment;
@@ -109,122 +104,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     private Movie movie;
     private Integer movieID;
     private MenuItem imdbMenuItem;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie_details);
-
-        ButterKnife.bind(this);
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        initCollapsingToolbar();
-        initUI();
-        initAds();
-    }
-
-
-    @Override
-    public MenuInflater getMenuInflater() {
-        return super.getMenuInflater();
-    }
-
-    private void initAds() {
-        mPublisherInterstitialAd = new PublisherInterstitialAd(this);
-        mPublisherInterstitialAd.setAdUnitId(getString(R.string.ad_unit_id));
-
-        mPublisherInterstitialAd.loadAd(new PublisherAdRequest.Builder().build());
-
-        mPublisherInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                // Code to be executed when an ad request fails.
-                Toast.makeText(getApplicationContext(), "Ad did not load", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-                mPublisherInterstitialAd.show();
-            }
-
-            @Override
-            public void onAdClosed() {
-                // Code to be executed when when the interstitial ad is closed.
-            }
-        });
-    }
-
-    private void initUI() {
-        castList = new ArrayList<>();
-        castAdapter = new CastAdapter(this, castList);
-
-        GridLayoutManager mLayoutManager = new GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, true);
-        rvCast.setLayoutManager(mLayoutManager);
-        rvCast.addItemDecoration(new GridSpacingItemDecoration(1, dpToPx(Objects.requireNonNull(this), 5), true));
-        rvCast.setItemAnimator(new DefaultItemAnimator());
-        rvCast.setAdapter(castAdapter);
-
-        movieDetailsPresenter = new MovieDetailViewer(this);
-        movieID = getIntent().getIntExtra(KEY_MOVIE_ID, 0);
-        movieDetailsPresenter.requestMovieData(movieID);
-    }
-
-
-    /**
-     * Initializing collapsing toolbar
-     * Will show and hide the toolbar title on scroll
-     */
-    private void initCollapsingToolbar() {
-
-        collapsingToolbar.setTitle(" ");
-        appBarLayout.setExpanded(true);
-
-        // hiding & showing the title when toolbar expanded & collapsed
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbar.setTitle(movieName);
-                    isShow = true;
-                } else if (isShow) {
-                    collapsingToolbar.setTitle(" ");
-                    isShow = false;
-                }
-            }
-        });
-    }
-
-    @Override
-    public void showProgress() {
-        pbMainProgressBar.setVisibility(View.VISIBLE);
-        clMovieDetail.setVisibility(View.GONE);
-        pbLoadBackdrop.setVisibility(View.VISIBLE);
-        pbLoadCast.setVisibility(View.VISIBLE);
-
-        if(trailersFragment != null)
-            trailersFragment.showProgress();
-    }
-
-    @Override
-    public void hideProgress() {
-        clMovieDetail.setVisibility(View.VISIBLE);
-
-        pbMainProgressBar.setVisibility(View.GONE);
-        pbLoadBackdrop.setVisibility(View.GONE);
-        pbLoadCast.setVisibility(View.GONE);
-
-        if(trailersFragment != null)
-            trailersFragment.hideProgress();
-    }
 
     public static void shareMovie(Activity activity, int movieID, String movieName) {
 
@@ -243,45 +122,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
                     .setText(shareText)
                     .startChooser();
         }
-    }
-
-    private void updateFab(final Movie movie) {
-        sH.updateSaved(movie.getId(), fbFavorite, getApplicationContext(), SaveMovieDBHandler.FAV.SAVE_LIGHT.DEFAULT_VALUE_ID
-                , SaveMovieDBHandler.FAV.UNSAVE_LIGHT.DEFAULT_VALUE_ID, SaveMovieDBHandler.FAV_URI);
-        fbFavorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sH.ivDBOnClickHandler(movie, SaveMovieDBHandler.FAV_URI, null, fbFavorite, null, getBaseContext());
-            }
-        });
-    }
-
-    public void updateCastView(Movie movie) {
-        castList.clear();
-        castList.addAll(movie.getCredits().getCast());
-        castAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onResponseFailure(Throwable throwable) {
-        Snackbar.make(viewCoordinator, getString(R.string.error_data), Snackbar.LENGTH_LONG).show();
-        if (clMovieDetail.getVisibility() == View.GONE) {
-            tvErrorMsg.setVisibility(View.VISIBLE);
-        }
-        if (trailersFragment != null)
-            trailersFragment.onResponseFailure(throwable);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        movieDetailsPresenter.onDestroy();
     }
 
     public static URL buildTMDBMovieURL(String movieId) {
@@ -330,6 +170,171 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
         return null;
     }
 
+    public static URL buildYouTubeURL(String key) {
+        Uri uri = new Uri.Builder()
+                .scheme(BASE)
+                .appendEncodedPath(YOUTUBE_BASE_PATH)
+                .appendEncodedPath(YOUTUBE_WATCH_PATH)
+                .appendQueryParameter("v", key)
+                .build();
+
+        try {
+            return new URL(uri.toString());
+        } catch (MalformedURLException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        return null;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_movie_details);
+
+        ButterKnife.bind(this);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        initCollapsingToolbar();
+        initUI();
+        initAds();
+    }
+
+    private void initAds() {
+        mPublisherInterstitialAd = new PublisherInterstitialAd(this);
+        mPublisherInterstitialAd.setAdUnitId(getString(R.string.ad_unit_id));
+
+        mPublisherInterstitialAd.loadAd(new PublisherAdRequest.Builder().build());
+
+        mPublisherInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+                Toast.makeText(getApplicationContext(), "Ad did not load", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                mPublisherInterstitialAd.show();
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when when the interstitial ad is closed.
+            }
+        });
+    }
+
+    private void initUI() {
+        castList = new ArrayList<>();
+        castAdapter = new CastAdapter(this, castList);
+
+        GridLayoutManager mLayoutManager = new GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, true);
+        rvCast.setLayoutManager(mLayoutManager);
+        rvCast.addItemDecoration(new GridItemSpacing(1, dpToPx(Objects.requireNonNull(this), 5), true));
+        rvCast.setItemAnimator(new DefaultItemAnimator());
+        rvCast.setAdapter(castAdapter);
+
+        movieDetailsPresenter = new MovieDetailViewer(this);
+        movieID = getIntent().getIntExtra(KEY_MOVIE_ID, 0);
+        movieDetailsPresenter.requestMovieData(movieID);
+    }
+
+    /**
+     * Initializing collapsing toolbar
+     * Will show and hide the toolbar title on scroll
+     */
+    private void initCollapsingToolbar() {
+
+        collapsingToolbar.setTitle(" ");
+        appBarLayout.setExpanded(true);
+
+        // hiding & showing the title when toolbar expanded & collapsed
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    collapsingToolbar.setTitle(movieName);
+                    isShow = true;
+                } else if (isShow) {
+                    collapsingToolbar.setTitle(" ");
+                    isShow = false;
+                }
+            }
+        });
+    }
+
+    @Override
+    public void showProgress() {
+        pbMainProgressBar.setVisibility(View.VISIBLE);
+        clMovieDetail.setVisibility(View.GONE);
+        pbLoadBackdrop.setVisibility(View.VISIBLE);
+        pbLoadCast.setVisibility(View.VISIBLE);
+
+        if (trailersFragment != null)
+            trailersFragment.showProgress();
+    }
+
+    @Override
+    public void hideProgress() {
+        clMovieDetail.setVisibility(View.VISIBLE);
+
+        pbMainProgressBar.setVisibility(View.GONE);
+        pbLoadBackdrop.setVisibility(View.GONE);
+        pbLoadCast.setVisibility(View.GONE);
+
+        if (trailersFragment != null)
+            trailersFragment.hideProgress();
+    }
+
+    private void updateFab(final Movie movie) {
+        sH.updateSaved(movie.getId(), fbFavorite, getApplicationContext(), SaveMovieDBHandler.FAV.SAVE_LIGHT.DEFAULT_VALUE_ID
+                , SaveMovieDBHandler.FAV.UNSAVE_LIGHT.DEFAULT_VALUE_ID, SaveMovieDBHandler.FAV_URI);
+        fbFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sH.ivDBOnClickHandler(movie, SaveMovieDBHandler.FAV_URI, null, fbFavorite, null, getBaseContext());
+            }
+        });
+    }
+
+    public void updateCastView(Movie movie) {
+        castList.clear();
+        castList.addAll(movie.getCredits().getCast());
+        castAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onResponseFailure(Throwable throwable) {
+        Snackbar.make(viewCoordinator, getString(R.string.error_data), Snackbar.LENGTH_LONG).show();
+        if (clMovieDetail.getVisibility() == View.GONE) {
+            tvErrorMsg.setVisibility(View.VISIBLE);
+        }
+        if (trailersFragment != null)
+            trailersFragment.onResponseFailure(throwable);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        movieDetailsPresenter.onDestroy();
+    }
+
     @Override
     public void setDataToViews(final Movie movie) {
         if (movie != null) {
@@ -340,7 +345,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
             tvMovieTitleSub.setText(movie.getTitle());
             tvMovieReleaseDate.setText(movie.getReleaseDate());
             tvMovieRatings.setText(String.valueOf(movie.getRating()));
-            tvRuntimeValue.setText(movie.getRunTime() + getString(R.string.minutes));
+            tvRuntimeValue.setText(String.format("%s%s", movie.getRunTime(), getString(R.string.minutes)));
             tvMovieDescription.setText(movie.getOverview());
             ratingBar.setRating(movie.getRating());
 
@@ -383,8 +388,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
 
             updateCastView(movie);
 
-            if(trailersFragment != null)
-                 trailersFragment.setDataToViews(movie);
+            if (trailersFragment != null)
+                trailersFragment.setDataToViews(movie);
         }
 
     }
@@ -394,11 +399,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
             sH.ivDBOnClickHandler(movie, SaveMovieDBHandler.TO_WATCH_URI, null, null, item, getApplicationContext());
     }
 
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
 
     @Override
     public void sendFragmentInstance(TrailersFragment fragment) {
@@ -453,22 +453,5 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public static URL buildYouTubeURL(String key) {
-        Uri uri = new Uri.Builder()
-                .scheme(BASE)
-                .appendEncodedPath(YOUTUBE_BASE_PATH)
-                .appendEncodedPath(YOUTUBE_WATCH_PATH)
-                .appendQueryParameter("v", key)
-                .build();
-
-        try {
-            return new URL(uri.toString());
-        } catch (MalformedURLException e) {
-            Log.e(TAG, e.getMessage());
-        }
-
-        return null;
     }
 }

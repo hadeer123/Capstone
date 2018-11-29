@@ -33,8 +33,8 @@ public class SearchMovieContract {
 
         public static final String COLUMN_MOVIE_ID = "movieID";
         public static final String COLUMN_MOVIE_TITLE = "title";
-        public static final String COLUMN_SAVE_TO_FAV= "IsFav";
-        public static final String COLUMN_SAVE_TO_WATCH= "IsToWatch";
+        public static final String COLUMN_SAVE_TO_FAV = "IsFav";
+        public static final String COLUMN_SAVE_TO_WATCH = "IsToWatch";
         public static final String COLUMN_MOVIE_RELEASE_DATE = "releaseDate";
         public static final String COLUMN_MOVIE_RATING = "rating";
         public static final String COLUMN_MOVIE_THUMB_PATH = "thumbPath";

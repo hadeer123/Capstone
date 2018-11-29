@@ -35,7 +35,7 @@ public class WidgetUpdaterService extends RemoteViewsService {
         Context mContext;
         Cursor mCursor;
 
-        public WidgetRemoteFactory(Context applicationContext) {
+        WidgetRemoteFactory(Context applicationContext) {
             mContext = applicationContext;
 
         }
@@ -126,9 +126,7 @@ public class WidgetUpdaterService extends RemoteViewsService {
                         .load(ApiClient.IMAGE_BASE_URL + thisThumbPath)
                         .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                         .get();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
+            } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
 

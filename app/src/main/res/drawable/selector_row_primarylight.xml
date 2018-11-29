@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
     <!-- focused -->
-    <item android:drawable="@color/primaryLightColor" android:state_focused="true"/>
+    <item android:drawable="@color/primaryDarkColor" android:state_focused="true" tools:ignore="StateListReachable"/>
     <!-- focused and pressed-->
     <item android:drawable="@color/primaryLightColor" android:state_focused="true" android:state_pressed="true"/>
     <!-- pressed -->

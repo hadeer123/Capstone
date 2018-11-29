@@ -1,7 +1,6 @@
 package com.smovies.hk.searchmovies.movieDetail;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -16,7 +15,7 @@ import android.widget.TextView;
 import com.smovies.hk.searchmovies.R;
 import com.smovies.hk.searchmovies.model.Movie;
 import com.smovies.hk.searchmovies.model.Video;
-import com.smovies.hk.searchmovies.utils.GridSpacingItemDecoration;
+import com.smovies.hk.searchmovies.utils.GridItemSpacing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,7 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.smovies.hk.searchmovies.utils.GridSpacingItemDecoration.dpToPx;
+import static com.smovies.hk.searchmovies.utils.GridItemSpacing.dpToPx;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,7 +34,7 @@ import static com.smovies.hk.searchmovies.utils.GridSpacingItemDecoration.dpToPx
  * Use the {@link TrailersFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TrailersFragment extends Fragment{
+public class TrailersFragment extends Fragment {
 
     @BindView(R.id.recycler_view_video_grid) RecyclerView rvVideo;
     @BindView(R.id.progress_bar_grid_loading) ProgressBar progressBar;
@@ -58,7 +57,7 @@ public class TrailersFragment extends Fragment{
     }
 
     public void showProgress() {
-       progressBar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
         rvVideo.setVisibility(View.INVISIBLE);
     }
 
@@ -78,12 +77,12 @@ public class TrailersFragment extends Fragment{
 
         GridLayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1, GridLayoutManager.HORIZONTAL, true);
         rvVideo.setLayoutManager(mLayoutManager);
-        rvVideo.addItemDecoration(new GridSpacingItemDecoration(1, dpToPx(Objects.requireNonNull(getContext()), 5), true));
+        rvVideo.addItemDecoration(new GridItemSpacing(1, dpToPx(Objects.requireNonNull(getContext()), 5), true));
         rvVideo.setItemAnimator(new DefaultItemAnimator());
         rvVideo.setAdapter(videoGridAdapter);
     }
 
-    public void videoGridAdapterInteraction(View view, int position){
+    public void videoGridAdapterInteraction(View view, int position) {
         //send activity interaction update.
         mListener.onVideoAdapterItemSelected(view, videos.get(position));
     }
@@ -116,13 +115,6 @@ public class TrailersFragment extends Fragment{
 
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -152,9 +144,9 @@ public class TrailersFragment extends Fragment{
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+
         void sendFragmentInstance(TrailersFragment fragment);
+
         void onVideoAdapterItemSelected(View v, Video video);
     }
 

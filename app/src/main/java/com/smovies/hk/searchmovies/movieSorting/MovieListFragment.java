@@ -23,7 +23,7 @@ import com.smovies.hk.searchmovies.R;
 import com.smovies.hk.searchmovies.model.Movie;
 import com.smovies.hk.searchmovies.movieDetail.MovieDetailsActivity;
 import com.smovies.hk.searchmovies.network.NetworkUtils;
-import com.smovies.hk.searchmovies.utils.GridSpacingItemDecoration;
+import com.smovies.hk.searchmovies.utils.GridItemSpacing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,15 +39,15 @@ import static com.smovies.hk.searchmovies.utils.Constants.PLAYING_NOW;
 import static com.smovies.hk.searchmovies.utils.Constants.POPULAR;
 import static com.smovies.hk.searchmovies.utils.Constants.TOP_RATED;
 import static com.smovies.hk.searchmovies.utils.Constants.TO_WATCH_LIST;
-import static com.smovies.hk.searchmovies.utils.GridSpacingItemDecoration.dpToPx;
+import static com.smovies.hk.searchmovies.utils.GridItemSpacing.dpToPx;
 
 //TODO Favorite and TO WATCH ARE NOT BEING UPDATED
 public class MovieListFragment extends Fragment implements MovieListContract.View, MovieItemClickListener,
         ShowEmptyView {
 
-    private static final String TAG = MovieListFragment.class.getSimpleName();
     public static final String ARG_SECTION_NUMBER = "section_number";
     public static final String ARGS_SEARCH_QUERY = "search_query";
+    private static final String TAG = MovieListFragment.class.getSimpleName();
     private static final int SPAN_COUNT_PORTRAIT = 2;
     private static final int SPAN_COUNT_LANDSCAPE = 4;
     private static final int PADDING_DP = 10;
@@ -76,21 +76,6 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
         // Required empty public constructor
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        switch (tabNumber) {
-            case FAV_LIST:
-                Objects.requireNonNull(getActivity()).setTitle(getString(R.string.nav_favorites_t));
-                break;
-            case TO_WATCH_LIST:
-                Objects.requireNonNull(getActivity()).setTitle(getString(R.string.nav_to_watch_t));
-                break;
-            default:
-                break;
-        }
-    }
-
     public static MovieListFragment newInstance(int sectionNumber) {
         MovieListFragment fragment = new MovieListFragment();
         Bundle args = new Bundle();
@@ -106,6 +91,21 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
         args.putString(ARGS_SEARCH_QUERY, queryString);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        switch (tabNumber) {
+            case FAV_LIST:
+                Objects.requireNonNull(getActivity()).setTitle(getString(R.string.nav_favorites_t));
+                break;
+            case TO_WATCH_LIST:
+                Objects.requireNonNull(getActivity()).setTitle(getString(R.string.nav_to_watch_t));
+                break;
+            default:
+                break;
+        }
     }
 
     private void initUI() {
@@ -135,7 +135,7 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
     private void GridSetup(int spanCount) {
         mLayoutManager = new GridLayoutManager(getContext(), spanCount);
         rvMovieList.setLayoutManager(mLayoutManager);
-        rvMovieList.addItemDecoration(new GridSpacingItemDecoration(spanCount, dpToPx(Objects.requireNonNull(getContext()), PADDING_DP), true));
+        rvMovieList.addItemDecoration(new GridItemSpacing(spanCount, dpToPx(Objects.requireNonNull(getContext()), PADDING_DP), true));
         rvMovieList.setItemAnimator(new DefaultItemAnimator());
         rvMovieList.setAdapter(moviesAdapter);
     }

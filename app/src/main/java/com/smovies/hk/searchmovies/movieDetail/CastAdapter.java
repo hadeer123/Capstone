@@ -30,7 +30,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.MyViewHolder> 
     private MovieDetailsActivity movieDetailsActivity;
     private List<Cast> castList;
 
-    public CastAdapter(MovieDetailsActivity movieDetailsActivity, List<Cast> castList) {
+    CastAdapter(MovieDetailsActivity movieDetailsActivity, List<Cast> castList) {
         this.movieDetailsActivity = movieDetailsActivity;
         this.castList = castList;
     }
@@ -58,13 +58,11 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.MyViewHolder> 
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-//                        holder.pbLoadProfile.setVisibility(View.GONE);
                         return false;
                     }
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-//                        holder.pbLoadProfile.setVisibility(View.GONE);
                         return false;
                     }
                 })
@@ -79,13 +77,12 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.MyViewHolder> 
     }
 
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.text_view_character_name) TextView tvCharacter;
         @BindView(R.id.text_view_cast_name) TextView tvName;
         @BindView(R.id.image_view_cast_photo) ImageView ivCastPhoto;
-//        @BindView(R.id.progress_bar_cast) ProgressBar pbLoadProfile;
 
-        public MyViewHolder(View itemView) {
+        MyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

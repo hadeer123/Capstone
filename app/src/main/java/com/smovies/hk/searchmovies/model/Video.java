@@ -1,9 +1,5 @@
 package com.smovies.hk.searchmovies.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
@@ -33,7 +29,7 @@ public class Video {
     @SerializedName("type")
     private String type;
 
-    public Video(String id, String iso6391, String iso31661, String key, String name, String site, long size, String type ) {
+    public Video(String id, String iso6391, String iso31661, String key, String name, String site, long size, String type) {
         this.id = id;
         this.iso6391 = iso6391;
         this.iso31661 = iso31661;

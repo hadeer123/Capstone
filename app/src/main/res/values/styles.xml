@@ -34,6 +34,7 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
     <style name="TranslucentStatusBar" parent="AppTheme">
@@ -41,7 +42,6 @@
     </style>
 
     <style name="NavigationDrawerStyle">
-        <item name="android:fontFamily"></item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">@dimen/font_size_caption</item>
     </style>

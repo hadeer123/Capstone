@@ -52,11 +52,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/iv_backdrop"
                     android:layout_marginBottom="25dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     app:autoSizeMaxTextSize="20sp"
                     app:autoSizeMinTextSize="13sp"
-                    app:autoSizeTextType="uniform"
-                    android:ellipsize="end"
-                    android:maxLines="1"/>
+                    app:autoSizeTextType="uniform"/>
 
             </RelativeLayout>
 

@@ -17,6 +17,11 @@ public class SaveMovieDBHandler {
 
     public static final Uri FAV_URI = SearchMovieContract.searchMoviesEntry.CONTENT_URI_FAV;
     public static final Uri TO_WATCH_URI = SearchMovieContract.searchMoviesEntry.CONTENT_URI_TO_WATCH;
+    private static SaveMovieDBHandler saveMovieDBHandler = new SaveMovieDBHandler();
+
+    public static SaveMovieDBHandler singleton() {
+        return saveMovieDBHandler;
+    }
 
     public void ivDBOnClickHandler(Movie movie, Uri contentUri, ImageView imageView, FloatingActionButton floatingActionButton, MenuItem menuItem, Context mContext) {
         if (!isSaved(movie.getId(), contentUri, mContext))
@@ -30,24 +35,15 @@ public class SaveMovieDBHandler {
     public boolean isSaved(int movieID, Uri uri, Context mContext) {
         String stringId = Integer.toString(movieID);
         uri = uri.buildUpon().appendPath(stringId).build();
-        Cursor cursor = mContext
-                .getContentResolver().query(uri, null, null, null, null, null);
 
         boolean re = false;
-        try {
+        try (Cursor cursor = mContext
+                .getContentResolver().query(uri, null, null, null, null, null)) {
             re = cursor.getCount() != 0;
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            cursor.close();
         }
         return re;
-    }
-
-    private static SaveMovieDBHandler saveMovieDBHandler = new SaveMovieDBHandler();
-
-    public static SaveMovieDBHandler singleton() {
-        return saveMovieDBHandler;
     }
 
     private void unSave(ImageView imageView, FloatingActionButton floatingActionButton, MenuItem menuItem, int movieID, Uri uri, Context mContext) {
@@ -110,9 +106,8 @@ public class SaveMovieDBHandler {
     }
 
     public int updateSavedResource(int movieID, Context mContext, int savedId, int unsavedId, Uri uri) {
-        int imgResFav = isSaved(movieID, uri, mContext) ?
+        return isSaved(movieID, uri, mContext) ?
                 savedId : unsavedId;
-        return imgResFav;
     }
 
     public void updateSaved(int movieID, ImageView imageView, Context mContext, int savedId, int unsavedId, Uri uri) {

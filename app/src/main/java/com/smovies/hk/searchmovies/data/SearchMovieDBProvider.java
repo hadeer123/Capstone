@@ -19,10 +19,10 @@ import com.smovies.hk.searchmovies.R;
 import java.util.Objects;
 
 
-public class SearchMovieDBProvider extends ContentProvider{
+public class SearchMovieDBProvider extends ContentProvider {
 
     public static final int MOVIES = 100;
-    public static final int MOVIES_WITH_ID= 101;
+    public static final int MOVIES_WITH_ID = 101;
 
     public static final int IN_FAV = 200;
     public static final int IN_FAV_WITH_ID = 201;
@@ -30,18 +30,18 @@ public class SearchMovieDBProvider extends ContentProvider{
     public static final int IN_TO_WATCH = 300;
     public static final int IN_TO_WATCH_WITH_ID = 301;
 
-    private static final UriMatcher uriMatcher= buildUriMatcher();
+    private static final UriMatcher uriMatcher = buildUriMatcher();
     private static final String TAG = SearchMovieDBProvider.class.getSimpleName();
     private static final int ARGS_SECOND_INDEX = 2;
     private static final String WHERE = "%s=?";
 
     private SavedMovieDBHelper favoriteMovieDBHelper;
 
-    public static UriMatcher buildUriMatcher (){
+    public static UriMatcher buildUriMatcher() {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
         uriMatcher.addURI(SearchMovieContract.AUTHORITY, SearchMovieContract.PATH_MOVIES, MOVIES);
-        uriMatcher.addURI(SearchMovieContract.AUTHORITY, SearchMovieContract.PATH_MOVIES+"/#",MOVIES_WITH_ID);
+        uriMatcher.addURI(SearchMovieContract.AUTHORITY, SearchMovieContract.PATH_MOVIES + "/#", MOVIES_WITH_ID);
 
         uriMatcher.addURI(SearchMovieContract.AUTHORITY, SearchMovieContract.PATH_MOVIES + "/" + SearchMovieContract.PATH_TO_FAV, IN_FAV);
         uriMatcher.addURI(SearchMovieContract.AUTHORITY, SearchMovieContract.PATH_MOVIES + "/" + SearchMovieContract.PATH_TO_FAV + "/#", IN_FAV_WITH_ID);
@@ -68,7 +68,7 @@ public class SearchMovieDBProvider extends ContentProvider{
         Cursor cursor = null;
         String id = "";
         String dbTable = "";
-        switch (match){
+        switch (match) {
             case IN_FAV:
                 dbTable = SearchMovieContract.searchMoviesEntry.FAV_TABLE_NAME;
                 break;
@@ -100,7 +100,6 @@ public class SearchMovieDBProvider extends ContentProvider{
         }
 
         cursor.setNotificationUri(Objects.requireNonNull(getContext()).getContentResolver(), uri);
-        cursor.notifyAll();
         return cursor;
     }
 
@@ -119,7 +118,7 @@ public class SearchMovieDBProvider extends ContentProvider{
         Uri returnUri = null;
         long id;
 
-        switch (match){
+        switch (match) {
             case MOVIES:
 //                returnUri = insertInDB(uri, values, db, SearchMovieContract.searchMoviesEntry.CONTENT_URI);
                 break;
@@ -136,7 +135,6 @@ public class SearchMovieDBProvider extends ContentProvider{
         }
 
         Objects.requireNonNull(getContext()).getContentResolver().notifyChange(uri, null);
-        notifyAll();
         return returnUri;
     }
 
@@ -176,8 +174,8 @@ public class SearchMovieDBProvider extends ContentProvider{
         int movieDeleted = 0;
         String id = "";
 
-        switch (match){
-            case  MOVIES_WITH_ID:
+        switch (match) {
+            case MOVIES_WITH_ID:
                 id = uri.getPathSegments().get(1);
                 break;
             case IN_FAV_WITH_ID:
@@ -204,9 +202,8 @@ public class SearchMovieDBProvider extends ContentProvider{
             e.printStackTrace();
         }
 
-        if(movieDeleted !=0)
+        if (movieDeleted != 0)
             getContext().getContentResolver().notifyChange(uri, null);
-        notifyAll();
         return movieDeleted;
     }
 
@@ -245,7 +242,6 @@ public class SearchMovieDBProvider extends ContentProvider{
 
         if (movieUpdated != 0)
             getContext().getContentResolver().notifyChange(uri, null);
-        notifyAll();
         return movieUpdated;
     }
 }

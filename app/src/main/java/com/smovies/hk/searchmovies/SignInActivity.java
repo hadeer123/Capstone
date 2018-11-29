@@ -21,6 +21,8 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -107,7 +109,7 @@ public class SignInActivity extends AppCompatActivity implements
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            saveToPreferences(account);
+            saveToPreferences(Objects.requireNonNull(account));
             startMainActivity(account.getDisplayName(), account.getEmail());
             // Signed in successfully, show authenticated UI.
             //updateUI(account);
@@ -115,7 +117,7 @@ public class SignInActivity extends AppCompatActivity implements
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-            Toast.makeText(getApplicationContext(), "Couldn't sign in!", Toast.LENGTH_LONG);
+            Toast.makeText(getApplicationContext(), "Couldn't sign in!", Toast.LENGTH_LONG).show();
             updateUI(null);
         }
     }
@@ -125,7 +127,7 @@ public class SignInActivity extends AppCompatActivity implements
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(getString(R.string.key_username), account.getDisplayName());
         editor.putString(getString(R.string.key_user_email), account.getEmail());
-        editor.commit();
+        editor.apply();
     }
     // [END handleSignInResult]
 
@@ -164,7 +166,7 @@ public class SignInActivity extends AppCompatActivity implements
     }
     // [END revokeAccess]
 
-    private void startMainActivity( String username, String email){
+    private void startMainActivity(String username, String email) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(getString(R.string.key_username), username);
         intent.putExtra(getString(R.string.key_user_email), email);
@@ -200,4 +202,4 @@ public class SignInActivity extends AppCompatActivity implements
                 break;
         }
     }
- }
+}

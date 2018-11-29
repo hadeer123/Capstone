@@ -46,7 +46,6 @@
     <dimen name="layout_cast_progress_bar_cast_margin_top">15dp</dimen>
 
 
-
     <!-- layout_rating -->
     <dimen name="layout_rating_text_view_rating_margin_top">15dp</dimen>
     <dimen name="layout_rating_text_view_out_of_margin_left">8dp</dimen>
@@ -79,7 +78,6 @@
 
     <!-- item_footer_loader -->
     <dimen name="item_footer_loader_padding">20dp</dimen>
-
 
 
     <!-- item_user_review -->

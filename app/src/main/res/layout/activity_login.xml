@@ -1,11 +1,11 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout android:id="@+id/main_layout"
+              xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/main_layout"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="@color/secondaryDarkColor"
               android:orientation="vertical"
               android:weightSum="4"
-              android:background="@color/secondaryDarkColor"
               tools:context=".SignInActivity">
 
     <LinearLayout

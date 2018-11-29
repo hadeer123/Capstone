@@ -12,7 +12,6 @@ import retrofit2.Response;
 
 import static com.smovies.hk.searchmovies.network.ApiClient.API_MOVIE_DB;
 import static com.smovies.hk.searchmovies.utils.Constants.CREDITS;
-import static com.smovies.hk.searchmovies.utils.Constants.VIDEOS;
 
 public class MovieDetailsModel implements MovieDetailContract.Model {
     private final String TAG = MovieDetailsModel.class.getSimpleName();

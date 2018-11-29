@@ -131,16 +131,16 @@ public class Movie {
         return credits;
     }
 
-    public Videos getTrailers(){
+    public void setCredits(Credits credits) {
+        this.credits = credits;
+    }
+
+    public Videos getTrailers() {
         return videos;
     }
 
     public void setVideos(Videos videos) {
         this.videos = videos;
-    }
-
-    public void setCredits(Credits credits) {
-        this.credits = credits;
     }
 
     public String getRunTime() {

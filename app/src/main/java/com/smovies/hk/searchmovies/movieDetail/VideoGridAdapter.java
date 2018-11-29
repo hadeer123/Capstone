@@ -1,8 +1,5 @@
 package com.smovies.hk.searchmovies.movieDetail;
 
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -12,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -22,15 +18,11 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.smovies.hk.searchmovies.R;
 import com.smovies.hk.searchmovies.model.Video;
-import com.smovies.hk.searchmovies.network.ApiClient;
 
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 
 import static com.smovies.hk.searchmovies.utils.Constants.BASE;
 import static com.smovies.hk.searchmovies.utils.Constants.IMG_0_JPG;
@@ -40,13 +32,23 @@ import static com.smovies.hk.searchmovies.utils.Constants.YOUTUBE_VI;
 
 public class VideoGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private static final String TAG = VideoGridAdapter.class.getSimpleName();
     private TrailersFragment trailersFragment;
     private List<Video> mVideoList;
-    private static final String TAG = VideoGridAdapter.class.getSimpleName();
 
     public VideoGridAdapter(TrailersFragment trailersFragment, List<Video> mVideoList) {
         this.mVideoList = mVideoList;
         this.trailersFragment = trailersFragment;
+    }
+
+    public static Uri buildYouTubeThumbURI(String key) {
+        return new Uri.Builder()
+                .scheme(BASE)
+                .appendEncodedPath(YOUTUBE_IMAGE_BASE_PATH)
+                .appendEncodedPath(YOUTUBE_VI)
+                .appendEncodedPath(key)
+                .appendEncodedPath(IMG_0_JPG)
+                .build();
     }
 
     @Override
@@ -82,15 +84,6 @@ public class VideoGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return mVideoList.size();
     }
 
-    public static Uri buildYouTubeThumbURI(String key) {
-        return new Uri.Builder()
-                .scheme(BASE)
-                .appendEncodedPath(YOUTUBE_IMAGE_BASE_PATH)
-                .appendEncodedPath(YOUTUBE_VI)
-                .appendEncodedPath(key)
-                .appendEncodedPath(IMG_0_JPG)
-                .build();
-    }
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.image_view_video_thumb) ImageView ivVideoThumb;
 
@@ -102,8 +95,8 @@ public class VideoGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         @Override
         public void onClick(View v) {
-                trailersFragment.videoGridAdapterInteraction(v, getAdapterPosition());
-    }
+            trailersFragment.videoGridAdapterInteraction(v, getAdapterPosition());
+        }
 
     }
 }

@@ -57,15 +57,6 @@ public class MainActivity extends AppCompatActivity
 
     TextView tvUsername, tvEmail;
     private int currentItem;
-    /**
-     * The {@link PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link FragmentStatePagerAdapter}.
-     */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,17 +104,13 @@ public class MainActivity extends AppCompatActivity
         outState.putInt(MovieListFragment.ARG_SECTION_NUMBER, currentItem);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
     private void userAccountSetup() {
         if (getIntent().hasExtra(getString(R.string.key_username))) {
             tvEmail.setText(getIntent().getStringExtra(getString(R.string.key_user_email)));
             tvUsername.setText(getIntent().getStringExtra(getString(R.string.key_username)));
         }
     }
+
     private void navigationDrawerSetup(Toolbar toolbar) {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -139,7 +126,22 @@ public class MainActivity extends AppCompatActivity
     private void tabsSetup() {
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        /*
+      The {@link PagerAdapter} that will provide
+      fragments for each of the sections. We use a
+      {@link FragmentPagerAdapter} derivative, which will keep every
+      loaded fragment in memory. If this becomes too memory intensive, it
+      may be best to switch to a
+      {@link FragmentStatePagerAdapter}.
+     */ /**
+         * The {@link PagerAdapter} that will provide
+         * fragments for each of the sections. We use a
+         * {@link FragmentPagerAdapter} derivative, which will keep every
+         * loaded fragment in memory. If this becomes too memory intensive, it
+         * may be best to switch to a
+         * {@link FragmentStatePagerAdapter}.
+         */
+        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         // Set up the ViewPager with the sections adapter.
         mViewPager.setAdapter(mSectionsPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
@@ -299,6 +301,7 @@ public class MainActivity extends AppCompatActivity
             setTitle(R.string.app_name);
         }
     }
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -325,10 +328,6 @@ public class MainActivity extends AppCompatActivity
             return 3;
         }
 
-        @Override
-        public void notifyDataSetChanged() {
-            super.notifyDataSetChanged();
-        }
 
         @Override
         public CharSequence getPageTitle(int position) {
