@@ -44,7 +44,7 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
         ShowEmptyView {
 
     private static final String TAG = MovieListFragment.class.getSimpleName();
-    private static final String ARG_SECTION_NUMBER = "section_number";
+    public static final String ARG_SECTION_NUMBER = "section_number";
     public static final String ARGS_SEARCH_QUERY = "search_query";
     private static final int SPAN_COUNT_PORTRAIT = 2;
     private static final int SPAN_COUNT_LANDSCAPE = 4;
@@ -274,11 +274,6 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
         }
 
         return rootView;
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 
 }

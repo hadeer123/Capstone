@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.fragment_container) FrameLayout fragmentContainer;
 
     TextView tvUsername, tvEmail;
+    private int currentItem;
     /**
      * The {@link PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity
         MobileAds.initialize(this, getString(R.string.ad_unit_id));
 
         ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
 
         navigationDrawerSetup(toolbar);
@@ -87,12 +89,31 @@ public class MainActivity extends AppCompatActivity
 
         if (fragmentContainer.getVisibility() == View.GONE)
             setTitle(R.string.app_name);
+
+    }
+
+    private void updateViewFromSavedState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            int position = savedInstanceState.getInt(MovieListFragment.ARG_SECTION_NUMBER);
+            if (position > TOP_RATED) {
+                createFragments(position);
+            } else {
+                mViewPager.setCurrentItem(position);
+            }
+            updateNavigationViewSelection(position);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        updateViewFromSavedState(savedInstanceState);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
+        outState.putInt(MovieListFragment.ARG_SECTION_NUMBER, currentItem);
     }
 
     @Override
@@ -123,10 +144,48 @@ public class MainActivity extends AppCompatActivity
         mViewPager.setAdapter(mSectionsPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
 
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int position = tab.getPosition();
+                updateNavigationViewSelection(position);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
         //set icons in tab layout
         Objects.requireNonNull(tabLayout.getTabAt(PLAYING_NOW)).setIcon(R.drawable.ic_now_playing_accent_24dp);
         Objects.requireNonNull(tabLayout.getTabAt(POPULAR)).setIcon(R.drawable.ic_whatshot_accent_24dp);
         Objects.requireNonNull(tabLayout.getTabAt(TOP_RATED)).setIcon(R.drawable.ic_top_rated_accent_24dp);
+    }
+
+    private void updateNavigationViewSelection(int position) {
+        switch (position) {
+            case PLAYING_NOW:
+                navigationView.setCheckedItem(R.id.nav_now_playing);
+                break;
+            case POPULAR:
+                navigationView.setCheckedItem(R.id.nav_popular);
+                break;
+            case TOP_RATED:
+                navigationView.setCheckedItem(R.id.nav_toprated);
+                break;
+            case FAV_LIST:
+                navigationView.setCheckedItem(R.id.nav_favorite);
+                break;
+            case TO_WATCH_LIST:
+                navigationView.setCheckedItem(R.id.nav_to_watch);
+                break;
+        }
     }
 
     @Override
@@ -180,20 +239,25 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_now_playing:
                 updateVisibly();
                 mViewPager.setCurrentItem(PLAYING_NOW);
+                currentItem = PLAYING_NOW;
                 break;
             case R.id.nav_popular:
                 updateVisibly();
                 mViewPager.setCurrentItem(POPULAR);
+                currentItem = POPULAR;
                 break;
             case R.id.nav_toprated:
                 updateVisibly();
                 mViewPager.setCurrentItem(TOP_RATED);
+                currentItem = TOP_RATED;
                 break;
             case R.id.nav_favorite:
                 createFragments(FAV_LIST);
+                currentItem = FAV_LIST;
                 break;
             case R.id.nav_to_watch:
                 createFragments(TO_WATCH_LIST);
+                currentItem = TO_WATCH_LIST;
                 break;
             case R.id.nav_signout:
                 signOutFromApp();
@@ -248,6 +312,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public Fragment getItem(int position) {
             updateVisibly();
+            currentItem = position;
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             return MovieListFragment.newInstance(position);
