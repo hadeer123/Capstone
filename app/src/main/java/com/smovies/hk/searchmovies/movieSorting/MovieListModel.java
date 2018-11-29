@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.smovies.hk.searchmovies.BuildConfig;
 import com.smovies.hk.searchmovies.data.LoadDBManager;
 import com.smovies.hk.searchmovies.model.Movie;
 import com.smovies.hk.searchmovies.model.MovieListResponse;
@@ -16,7 +17,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.smovies.hk.searchmovies.network.ApiClient.API_MOVIE_DB;
 import static com.smovies.hk.searchmovies.utils.Constants.GET_MOVIES;
 import static com.smovies.hk.searchmovies.utils.Constants.PLAYING_NOW;
 import static com.smovies.hk.searchmovies.utils.Constants.POPULAR;
@@ -67,19 +67,19 @@ public class MovieListModel implements MovieListContract.Model {
         switch (tabNumber) {
             case PLAYING_NOW:
                 call =
-                        apiService.getNowPlayingMoviesList(API_MOVIE_DB, pageNo);
+                        apiService.getNowPlayingMoviesList(BuildConfig.API_KEY, pageNo);
                 break;
             case POPULAR:
                 call =
-                        apiService.getPopularMoviesList(API_MOVIE_DB, pageNo);
+                        apiService.getPopularMoviesList(BuildConfig.API_KEY, pageNo);
                 break;
             case TOP_RATED:
                 call =
-                        apiService.getTopRatedMoviesList(API_MOVIE_DB, pageNo);
+                        apiService.getTopRatedMoviesList(BuildConfig.API_KEY, pageNo);
                 break;
             case GET_MOVIES:
                 call =
-                        apiService.getMoviesList(API_MOVIE_DB, query, pageNo);
+                        apiService.getMoviesList(BuildConfig.API_KEY, query, pageNo);
                 break;
             default:
                 break;

@@ -6,7 +6,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
     private static final String BASE_URL = "http://api.themoviedb.org/3/";
-    public static final String API_MOVIE_DB = "8934d5a9f489ef4ac9de9c6fb5aa6b7a";
     public static final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w342/";
     public static final String POSTER_BASE_URL = "https://image.tmdb.org/t/p/w500/";
     public static final String BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w780/";

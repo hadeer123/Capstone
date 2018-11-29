@@ -2,6 +2,7 @@ package com.smovies.hk.searchmovies.movieDetail;
 
 import android.util.Log;
 
+import com.smovies.hk.searchmovies.BuildConfig;
 import com.smovies.hk.searchmovies.model.Movie;
 import com.smovies.hk.searchmovies.network.ApiClient;
 import com.smovies.hk.searchmovies.network.ApiInterface;
@@ -10,7 +11,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.smovies.hk.searchmovies.network.ApiClient.API_MOVIE_DB;
 import static com.smovies.hk.searchmovies.utils.Constants.CREDITS;
 
 public class MovieDetailsModel implements MovieDetailContract.Model {
@@ -23,7 +23,7 @@ public class MovieDetailsModel implements MovieDetailContract.Model {
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
-        Call<Movie> call = apiService.getMovieDetails(movieId, API_MOVIE_DB, CREDITS);
+        Call<Movie> call = apiService.getMovieDetails(movieId, BuildConfig.API_KEY, CREDITS);
 
         call.enqueue(new Callback<Movie>() {
             @Override

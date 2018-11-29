@@ -50,15 +50,14 @@ public class MovieListViewer implements MovieListContract.Presenter, MovieListCo
 
     @Override
     public void onFinished(List<Movie> movieArrayList) {
-        movieListView.setDataToRecyclerView(movieArrayList);
         if (movieListView != null) {
             movieListView.hideProgress();
+            movieListView.setDataToRecyclerView(movieArrayList);
         }
     }
 
     @Override
     public void onFailure(Throwable t) {
-
         movieListView.onResponseFailure(t);
         if (movieListView != null) {
             movieListView.hideProgress();
