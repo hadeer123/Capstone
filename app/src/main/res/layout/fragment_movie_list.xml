@@ -22,16 +22,44 @@
         android:layout_height="0dp"
         android:layout_centerInParent="true"/>
 
-    <TextView
-        android:id="@+id/tv_empty_view"
+    <RelativeLayout
+        android:id="@+id/error_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:drawablePadding="10dp"
-        android:drawableTop="@drawable/ic_empty_movies"
-        android:gravity="center_horizontal"
-        android:text="@string/no_movies"
-        android:textAppearance="@style/Caption"
-        android:visibility="gone"/>
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_no_inter_view_view"
+            style="@style/TitleDisabled"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:drawablePadding="10dp"
+            android:gravity="center_horizontal"
+            android:text="@string/no_internet"
+            android:visibility="gone"
+            tools:text="@string/no_internet"/>
+
+        <TextView
+            android:id="@+id/tv_empty_view"
+            style="@style/TitleDisabled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:drawablePadding="10dp"
+            android:gravity="center_horizontal"
+            android:text="@string/no_movies"
+            android:visibility="gone"
+            tools:text="@string/no_movies"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/empty_poster"
+            android:gravity="center_horizontal"
+            app:srcCompat="@drawable/ic_empty_movies"/>
+
+    </RelativeLayout>
+
 
 </android.support.constraint.ConstraintLayout>

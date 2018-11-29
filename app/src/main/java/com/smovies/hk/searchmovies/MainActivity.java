@@ -134,7 +134,6 @@ public class MainActivity extends AppCompatActivity
         View headerView = navigationView.getHeaderView(0);
         tvUsername = headerView.findViewById(R.id.nav_head_username);
         tvEmail = headerView.findViewById(R.id.nav_head_email);
-
     }
 
     private void tabsSetup() {

@@ -28,21 +28,20 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.smovies.hk.searchmovies.utils.Constants.TOP_RATED;
+
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMoviesViewHolder> {
     private static final String TAG = MoviesAdapter.class.getSimpleName();
     private MovieListFragment movieListFragment;
     private List<Movie> movieList;
+    private int tabNumber;
     private Context mContext;
 
-
-    public MoviesAdapter(MovieListFragment movieListFragment, List<Movie> movieList) {
+    public MoviesAdapter(MovieListFragment movieListFragment, List<Movie> movieList, int tabNumber) {
         this.movieListFragment = movieListFragment;
         this.movieList = movieList;
-    }
-
-    public MoviesAdapter(List<Movie> movieList, Context context) {
-        mContext = context;
-        this.movieList = movieList;
+        this.tabNumber = tabNumber;
+        mContext = movieListFragment.getContext();
     }
 
     @NonNull
@@ -58,11 +57,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
     public void onBindViewHolder(@NonNull final ListMoviesViewHolder holder, final int position) {
 
         final Movie movie = movieList.get(position);
-        final Context context;
+
+
         if (movieListFragment != null) {
-            context = movieListFragment.getContext();
-        } else {
-            context = mContext;
+            mContext = movieListFragment.getContext();
         }
 
 
@@ -70,18 +68,20 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
         holder.tvMovieRatings.setText(String.valueOf(movie.getRating()));
         holder.tvReleaseDate.setText(movie.getReleaseDate());
 
+        updateImgViewVisibility(holder);
+
         final SaveMovieDBHandler singleton = SaveMovieDBHandler.singleton();
 
         singleton.updateSaved(movie.getId(), holder.ivAddFav,
-                context, SaveMovieDBHandler.FAV.SAVE_LIGHT.DEFAULT_VALUE_ID
+                mContext, SaveMovieDBHandler.FAV.SAVE_LIGHT.DEFAULT_VALUE_ID
                 , SaveMovieDBHandler.FAV.UNSAVE_LIGHT.DEFAULT_VALUE_ID, SaveMovieDBHandler.FAV_URI);
 
         singleton.updateSaved(movie.getId(), holder.ivAddToWatch,
-                context, SaveMovieDBHandler.TO_WATCH.SAVE_LIGHT.DEFAULT_VALUE_ID
+                mContext, SaveMovieDBHandler.TO_WATCH.SAVE_LIGHT.DEFAULT_VALUE_ID
                 , SaveMovieDBHandler.TO_WATCH.UNSAVE_LIGHT.DEFAULT_VALUE_ID, SaveMovieDBHandler.TO_WATCH_URI);
 
         // loading album cover using Glide library
-        Glide.with(context)
+        Glide.with(mContext)
                 .load(ApiClient.IMAGE_BASE_URL + movie.getThumbPath())
                 .listener(new RequestListener<Drawable>() {
                     @Override
@@ -111,7 +111,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
             public void onClick(View v) {
                 singleton.ivDBOnClickHandler(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_FAV
                         , holder.ivAddFav, null, null
-                        , context);
+                        , mContext);
             }
         });
 
@@ -120,12 +120,21 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ListMovies
             public void onClick(View v) {
                 singleton.ivDBOnClickHandler(movie, SearchMovieContract.searchMoviesEntry.CONTENT_URI_TO_WATCH
                         , holder.ivAddToWatch, null, null
-                        , context);
+                        , mContext);
             }
         });
 
     }
 
+    private void updateImgViewVisibility(@NonNull ListMoviesViewHolder holder) {
+        if (tabNumber > TOP_RATED) {
+            holder.ivAddFav.setVisibility(View.GONE);
+            holder.ivAddToWatch.setVisibility(View.GONE);
+        } else {
+            holder.ivAddFav.setVisibility(View.VISIBLE);
+            holder.ivAddToWatch.setVisibility(View.VISIBLE);
+        }
+    }
 
     @Override
     public int getItemCount() {

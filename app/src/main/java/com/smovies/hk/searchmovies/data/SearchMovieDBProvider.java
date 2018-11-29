@@ -100,6 +100,7 @@ public class SearchMovieDBProvider extends ContentProvider{
         }
 
         cursor.setNotificationUri(Objects.requireNonNull(getContext()).getContentResolver(), uri);
+        cursor.notifyAll();
         return cursor;
     }
 
@@ -135,6 +136,7 @@ public class SearchMovieDBProvider extends ContentProvider{
         }
 
         Objects.requireNonNull(getContext()).getContentResolver().notifyChange(uri, null);
+        notifyAll();
         return returnUri;
     }
 
@@ -204,7 +206,7 @@ public class SearchMovieDBProvider extends ContentProvider{
 
         if(movieDeleted !=0)
             getContext().getContentResolver().notifyChange(uri, null);
-
+        notifyAll();
         return movieDeleted;
     }
 
@@ -243,7 +245,7 @@ public class SearchMovieDBProvider extends ContentProvider{
 
         if (movieUpdated != 0)
             getContext().getContentResolver().notifyChange(uri, null);
-
+        notifyAll();
         return movieUpdated;
     }
 }

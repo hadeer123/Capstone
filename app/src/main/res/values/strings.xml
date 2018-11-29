@@ -127,5 +127,6 @@
     <string name="empty_poster">movie poster</string>
     <string name="desc_app_icon">app icon</string>
     <string name="imdb_link_not_available">IMDB Link not available.</string>
+    <string name="no_internet">No internet, check your internet connection !</string>
 </resources>
 

@@ -15,12 +15,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.smovies.hk.searchmovies.R;
 import com.smovies.hk.searchmovies.model.Movie;
 import com.smovies.hk.searchmovies.movieDetail.MovieDetailsActivity;
+import com.smovies.hk.searchmovies.network.NetworkUtils;
 import com.smovies.hk.searchmovies.utils.GridSpacingItemDecoration;
 
 import java.util.ArrayList;
@@ -54,6 +56,8 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
     @BindView(R.id.rv_movie_list) RecyclerView rvMovieList;
     @BindView(R.id.pb_loading) ProgressBar pbLoading;
     @BindView(R.id.tv_empty_view) TextView tvEmptyView;
+    @BindView(R.id.tv_no_inter_view_view) TextView tvNoInternet;
+    @BindView(R.id.error_view) RelativeLayout rlErrorView;
 
     private MovieListViewer movieListViewer;
     private List<Movie> moviesList;
@@ -106,7 +110,7 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
 
     private void initUI() {
         moviesList = new ArrayList<>();
-        moviesAdapter = new MoviesAdapter(this, moviesList);
+        moviesAdapter = new MoviesAdapter(this, moviesList, tabNumber);
         int currentOrientation = getResources().getConfiguration().orientation;
         int spanCount = SPAN_COUNT_PORTRAIT;
 
@@ -205,7 +209,14 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
     @Override
     public void onResponseFailure(Throwable throwable) {
         Log.e(TAG, throwable.getMessage());
-        Toast.makeText(getContext(), getString(R.string.connection_error), Toast.LENGTH_LONG).show();
+        String msg;
+        if (!NetworkUtils.isNetworkAvailable(getContext())) {
+            msg = getString(R.string.no_internet);
+        } else {
+            msg = getString(R.string.connection_error);
+        }
+
+        Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -233,12 +244,14 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
 
     @Override
     public void showEmptyView() {
+        rlErrorView.setVisibility(View.VISIBLE);
         rvMovieList.setVisibility(View.GONE);
         tvEmptyView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideEmptyView() {
+        rlErrorView.setVisibility(View.GONE);
         rvMovieList.setVisibility(View.VISIBLE);
         tvEmptyView.setVisibility(View.GONE);
     }
@@ -254,6 +267,18 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
         setListeners();
         movieListViewer = new MovieListViewer(this);
         getActivity().setTitle(R.string.app_name);
+        if (NetworkUtils.isNetworkAvailable(getContext())) {
+            rlErrorView.setVisibility(View.GONE);
+            tvNoInternet.setVisibility(View.GONE);
+            retrieveMovies();
+        } else {
+            rlErrorView.setVisibility(View.VISIBLE);
+            tvNoInternet.setVisibility(View.VISIBLE);
+        }
+        return rootView;
+    }
+
+    private void retrieveMovies() {
         switch (tabNumber) {
             case PLAYING_NOW:
             case POPULAR:
@@ -272,8 +297,6 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
                 movieListViewer.requestDataFromDB(tabNumber, getContext(), this);
                 break;
         }
-
-        return rootView;
     }
 
 }

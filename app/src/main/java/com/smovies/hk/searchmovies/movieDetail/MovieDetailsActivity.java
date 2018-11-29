@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -87,10 +88,13 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     @BindView(R.id.iv_backdrop) ImageView ivBackdrop;
     @BindView(R.id.movie_title_tv) TextView tvMovieTitle;
     @BindView(R.id.pb_load_backdrop) ProgressBar pbLoadBackdrop;
+    @BindView(R.id.progress_bar) ProgressBar pbMainProgressBar;
     @BindView(R.id.main_content) View viewCoordinator;
     @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbar;
     @BindView(R.id.appbar) AppBarLayout appBarLayout;
     @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.layout_movie_detail) ConstraintLayout clMovieDetail;
+
 
     private CastAdapter castAdapter;
     private MovieDetailViewer movieDetailsPresenter;
@@ -149,7 +153,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
             @Override
             public void onAdClosed() {
                 // Code to be executed when when the interstitial ad is closed.
-
             }
         });
     }
@@ -202,6 +205,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
 
     @Override
     public void showProgress() {
+        pbMainProgressBar.setVisibility(View.VISIBLE);
+        clMovieDetail.setVisibility(View.GONE);
         pbLoadBackdrop.setVisibility(View.VISIBLE);
         pbLoadCast.setVisibility(View.VISIBLE);
 
@@ -211,6 +216,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
 
     @Override
     public void hideProgress() {
+        clMovieDetail.setVisibility(View.VISIBLE);
+
+        pbMainProgressBar.setVisibility(View.GONE);
         pbLoadBackdrop.setVisibility(View.GONE);
         pbLoadCast.setVisibility(View.GONE);
 
@@ -257,8 +265,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     @Override
     public void onResponseFailure(Throwable throwable) {
         Snackbar.make(viewCoordinator, getString(R.string.error_data), Snackbar.LENGTH_LONG).show();
-        tvErrorMsg.setVisibility(View.VISIBLE);
-
+        if (clMovieDetail.getVisibility() == View.GONE) {
+            tvErrorMsg.setVisibility(View.VISIBLE);
+        }
         if (trailersFragment != null)
             trailersFragment.onResponseFailure(throwable);
     }
