@@ -80,9 +80,6 @@ public class MainActivity extends AppCompatActivity
 
         navigationDrawerSetup(toolbar);
 
-        tvUsername = findViewById(R.id.nav_head_username);
-        tvEmail = findViewById(R.id.nav_head_email);
-
         tabsSetup();
 
         userAccountSetup();
@@ -134,6 +131,10 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_now_playing);
+        View headerView = navigationView.getHeaderView(0);
+        tvUsername = headerView.findViewById(R.id.nav_head_username);
+        tvEmail = headerView.findViewById(R.id.nav_head_email);
+
     }
 
     private void tabsSetup() {
