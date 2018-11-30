@@ -1,6 +1,7 @@
 package com.smovies.hk.searchmovies.movieSorting;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -25,34 +26,23 @@ import static com.smovies.hk.searchmovies.utils.Constants.TOP_RATED;
 public class MovieListModel implements MovieListContract.Model {
 
     private final String TAG = MovieListModel.class.getSimpleName();
+    private OnFinishedListener onFinishedListener;
+    private String query;
+    private int pageNo;
+    private int tabNumber;
+    private ApiInterface apiService;
+
 
     @Override
-    public void getMovieList(final OnFinishedListener onFinishedListener, String query, int pageNo, int tabNumber) {
+    public void getMovieList(OnFinishedListener onFinishedListener, String query, int pageNo, int tabNumber) {
 
-        ApiInterface apiService =
+        this.apiService =
                 ApiClient.getClient().create(ApiInterface.class);
-
-        Call<MovieListResponse> call = getMovieListResponseCall(pageNo, query, tabNumber, apiService);
-
-        call.enqueue(new Callback<MovieListResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<MovieListResponse> call, @NonNull Response<MovieListResponse> response) {
-                List<Movie> movies = null;
-                if (response.body() != null) {
-                    movies = response.body().getResults();
-                }
-                assert movies != null;
-                Log.d(TAG, "Number of movies received: " + movies.size());
-                onFinishedListener.onFinished(movies);
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<MovieListResponse> call, @NonNull Throwable t) {
-                // Log error here since request failed
-                Log.e(TAG, t.toString());
-                onFinishedListener.onFailure(t);
-            }
-        });
+        this.onFinishedListener = onFinishedListener;
+        this.query = query;
+        this.pageNo = pageNo;
+        this.tabNumber = tabNumber;
+        new getMoviesTask().execute();
     }
 
     @Override
@@ -85,5 +75,53 @@ public class MovieListModel implements MovieListContract.Model {
                 break;
         }
         return call;
+    }
+
+    private class getMoviesTask extends AsyncTask<Void, Void, Call<MovieListResponse>> {
+        @Override
+        protected Call<MovieListResponse> doInBackground(Void... voids) {
+            return getMovieListResponseCall(pageNo, query, tabNumber, apiService);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Call<MovieListResponse> movieListResponseCall) {
+            super.onPostExecute(movieListResponseCall);
+            movieListResponseCall.enqueue(new Callback<MovieListResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<MovieListResponse> call, @NonNull Response<MovieListResponse> response) {
+                    List<Movie> movies = null;
+                    if (response.body() != null) {
+                        movies = response.body().getResults();
+                    }
+                    assert movies != null;
+                    Log.d(TAG, "Number of movies received: " + movies.size());
+                    onFinishedListener.onFinished(movies);
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<MovieListResponse> call, @NonNull Throwable t) {
+                    // Log error here since request failed
+                    Log.e(TAG, t.toString());
+                    onFinishedListener.onFailure(t);
+                }
+            });
+        }
+
+        @Override
+        protected void onCancelled(Call<MovieListResponse> movieListResponseCall) {
+            super.onCancelled(movieListResponseCall);
+            onFinishedListener.onFailure(new Throwable());
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            onFinishedListener.onFailure(new Throwable());
+        }
     }
 }

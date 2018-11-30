@@ -53,7 +53,7 @@ public class LoadDBManager implements LoaderManager.LoaderCallbacks<Cursor> {
             return;
         }
         List<Movie> movies = fromCursorToMovies(cursor);
-        Log.d(TAG, "Number of movies received: " + movies.size());
+        Log.d(TAG, mContext.getString(R.string.number_of_movies_msg) + movies.size());
         onFinishedListener.onFinished(movies);
     }
 

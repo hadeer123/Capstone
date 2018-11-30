@@ -21,8 +21,9 @@ public class MovieDetailViewer implements MovieDetailContract.Presenter, MovieDe
 
         if (movieDetailView != null) {
             movieDetailView.showProgress();
+            movieDetailsModel.getMovieDetails(this, movieId);
         }
-        movieDetailsModel.getMovieDetails(this, movieId);
+
     }
 
 
@@ -31,15 +32,16 @@ public class MovieDetailViewer implements MovieDetailContract.Presenter, MovieDe
 
         if (movieDetailView != null) {
             movieDetailView.hideProgress();
+            movieDetailView.setDataToViews(movie);
         }
-        movieDetailView.setDataToViews(movie);
+
     }
 
     @Override
     public void onFailure(Throwable t) {
         if (movieDetailView != null) {
             movieDetailView.hideProgress();
+            movieDetailView.onResponseFailure(t);
         }
-        movieDetailView.onResponseFailure(t);
     }
 }

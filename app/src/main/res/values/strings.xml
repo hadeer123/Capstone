@@ -82,7 +82,6 @@
     <string name="disconnect">Disconnect</string>
 
 
-    <!-- TODO(user): replace with your real server client ID -->
     <!-- Server Client ID.  This should be a valid Web OAuth 2.0 Client ID obtained
          from https://console.developers.google.com/ -->
 
@@ -95,7 +94,9 @@
     <!--SEARCH ACTIVITY-->
     <string name="search_hint">Search Movie</string>
     <string name="app_label">Search Movies</string>
-
+    <string name="failed_sigin_msg">signInResult:failed code=</string>
+    <string name="errro_sigin_msg">Couldn\'t sign in!</string>
+    <string name="number_of_movies_msg">Number of movies received:</string>
 
 </resources>
 

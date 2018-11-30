@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -41,9 +42,14 @@ import static com.smovies.hk.searchmovies.utils.Constants.TOP_RATED;
 import static com.smovies.hk.searchmovies.utils.Constants.TO_WATCH_LIST;
 import static com.smovies.hk.searchmovies.utils.GridItemSpacing.dpToPx;
 
-//TODO Favorite and TO WATCH ARE NOT BEING UPDATED
 public class MovieListFragment extends Fragment implements MovieListContract.View, MovieItemClickListener,
         ShowEmptyView {
+    private static final String KEY_INSTANCE_STATE_RV_POSITION = "rv_position";
+    private static final String KEY_INSTANCE_STATE_SCROLL_X = "rv_scroll_x";
+    private static final String KEY_INSTANCE_STATE_SCROLL_Y = "rv_scroll_y";
+    private MovieListFragmentListener movieListFragmentListener;
+    private int scrollX, scrollY;
+    private Parcelable mLayoutManagerSavedState;
 
     public static final String ARG_SECTION_NUMBER = "section_number";
     public static final String ARGS_SEARCH_QUERY = "search_query";
@@ -69,6 +75,15 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
     private boolean loading = true;
     private int visibleThreshold = 5;
     private GridLayoutManager mLayoutManager;
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(KEY_INSTANCE_STATE_RV_POSITION, rvMovieList.getLayoutManager().onSaveInstanceState());
+        outState.putInt(KEY_INSTANCE_STATE_SCROLL_X, rvMovieList.getScrollX());
+        outState.putInt(KEY_INSTANCE_STATE_SCROLL_Y, rvMovieList.getScrollY());
+        movieListFragmentListener.updateCurrentPage(tabNumber);
+    }
     private int tabNumber;
     private String queryString;
 
@@ -96,6 +111,9 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if (context instanceof MovieListFragment.MovieListFragmentListener) {
+            movieListFragmentListener = (MovieListFragment.MovieListFragmentListener) context;
+        }
         switch (tabNumber) {
             case FAV_LIST:
                 Objects.requireNonNull(getActivity()).setTitle(getString(R.string.nav_favorites_t));
@@ -176,6 +194,12 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            mLayoutManagerSavedState = savedInstanceState.getParcelable(KEY_INSTANCE_STATE_RV_POSITION);
+            scrollX = savedInstanceState.getInt(KEY_INSTANCE_STATE_SCROLL_X);
+            scrollY = savedInstanceState.getInt(KEY_INSTANCE_STATE_SCROLL_Y);
+        }
+
         if (getArguments() != null) {
             tabNumber = getArguments().getInt(ARG_SECTION_NUMBER);
             queryString = getArguments().getString(ARGS_SEARCH_QUERY);
@@ -202,6 +226,11 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
         //only do that if on the first three tabs
         if (tabNumber < 3) {
             pageNo++;
+        }
+
+        if (mLayoutManagerSavedState != null) {
+            rvMovieList.getLayoutManager().onRestoreInstanceState(mLayoutManagerSavedState);
+            rvMovieList.scrollTo(scrollX, scrollY);
         }
 
     }
@@ -297,6 +326,10 @@ public class MovieListFragment extends Fragment implements MovieListContract.Vie
                 movieListViewer.requestDataFromDB(tabNumber, getContext(), this);
                 break;
         }
+    }
+
+    public interface MovieListFragmentListener {
+        void updateCurrentPage(int tabNumber);
     }
 
 }

@@ -43,8 +43,7 @@ import static com.smovies.hk.searchmovies.utils.Constants.TOP_RATED;
 import static com.smovies.hk.searchmovies.utils.Constants.TO_WATCH_LIST;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-
+        implements NavigationView.OnNavigationItemSelectedListener, MovieListFragment.MovieListFragmentListener {
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -54,7 +53,9 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
     @BindView(R.id.fragment_container) FrameLayout fragmentContainer;
+    SectionsPagerAdapter mSectionsPagerAdapter;
 
+    private int fragmentInContainer;
     TextView tvUsername, tvEmail;
     private int currentItem;
 
@@ -102,6 +103,11 @@ public class MainActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(MovieListFragment.ARG_SECTION_NUMBER, currentItem);
+        if (fragmentContainer.getVisibility() == View.VISIBLE) {
+            outState.putInt(MovieListFragment.ARG_SECTION_NUMBER, fragmentInContainer);
+        } else {
+            outState.putInt(MovieListFragment.ARG_SECTION_NUMBER, mViewPager.getCurrentItem());
+        }
     }
 
     private void userAccountSetup() {
@@ -141,11 +147,11 @@ public class MainActivity extends AppCompatActivity
          * may be best to switch to a
          * {@link FragmentStatePagerAdapter}.
          */
-        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         // Set up the ViewPager with the sections adapter.
         mViewPager.setAdapter(mSectionsPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
-
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -165,6 +171,10 @@ public class MainActivity extends AppCompatActivity
         });
 
         //set icons in tab layout
+        updateTabsIcons();
+    }
+
+    private void updateTabsIcons() {
         Objects.requireNonNull(tabLayout.getTabAt(PLAYING_NOW)).setIcon(R.drawable.ic_now_playing_accent_24dp);
         Objects.requireNonNull(tabLayout.getTabAt(POPULAR)).setIcon(R.drawable.ic_whatshot_accent_24dp);
         Objects.requireNonNull(tabLayout.getTabAt(TOP_RATED)).setIcon(R.drawable.ic_top_rated_accent_24dp);
@@ -277,10 +287,11 @@ public class MainActivity extends AppCompatActivity
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment).commit();
 
+        fragmentInContainer = position;
+
         fragmentContainer.setVisibility(View.VISIBLE);
         mViewPager.setVisibility(View.GONE);
         tabLayout.setVisibility(View.GONE);
-
     }
 
     private void signOutFromApp() {
@@ -300,6 +311,11 @@ public class MainActivity extends AppCompatActivity
             fragmentContainer.setVisibility(View.GONE);
             setTitle(R.string.app_name);
         }
+    }
+
+    @Override
+    public void updateCurrentPage(int tabNumber) {
+        currentItem = tabNumber;
     }
 
     /**

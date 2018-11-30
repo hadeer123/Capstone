@@ -116,8 +116,8 @@ public class SignInActivity extends AppCompatActivity implements
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-            Toast.makeText(getApplicationContext(), "Couldn't sign in!", Toast.LENGTH_LONG).show();
+            Log.w(TAG, getString(R.string.failed_sigin_msg) + e.getStatusCode());
+            Toast.makeText(getApplicationContext(), getString(R.string.errro_sigin_msg), Toast.LENGTH_LONG).show();
             updateUI(null);
         }
     }
