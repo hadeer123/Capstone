@@ -212,7 +212,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
             @Override
             public void onAdFailedToLoad(int errorCode) {
                 // Code to be executed when an ad request fails.
-                Toast.makeText(getApplicationContext(), "Ad did not load", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.ad_loading_error_msg), Toast.LENGTH_SHORT).show();
             }
 
             @Override

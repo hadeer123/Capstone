@@ -97,6 +97,7 @@
     <string name="failed_sigin_msg">signInResult:failed code=</string>
     <string name="errro_sigin_msg">Couldn\'t sign in!</string>
     <string name="number_of_movies_msg">Number of movies received:</string>
+    <string name="ad_loading_error_msg">Ad did not load</string>
 
 </resources>
 

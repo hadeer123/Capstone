@@ -25,34 +25,14 @@ import static com.smovies.hk.searchmovies.utils.Constants.TOP_RATED;
 
 public class MovieListModel implements MovieListContract.Model {
 
-    private final String TAG = MovieListModel.class.getSimpleName();
-    private OnFinishedListener onFinishedListener;
-    private String query;
-    private int pageNo;
-    private int tabNumber;
-    private ApiInterface apiService;
+    private static final String TAG = MovieListModel.class.getSimpleName();
+    private static OnFinishedListener onFinishedListener;
+    private static String query;
+    private static int pageNo;
+    private static int tabNumber;
+    private static ApiInterface apiService;
 
-
-    @Override
-    public void getMovieList(OnFinishedListener onFinishedListener, String query, int pageNo, int tabNumber) {
-
-        this.apiService =
-                ApiClient.getClient().create(ApiInterface.class);
-        this.onFinishedListener = onFinishedListener;
-        this.query = query;
-        this.pageNo = pageNo;
-        this.tabNumber = tabNumber;
-        new getMoviesTask().execute();
-    }
-
-    @Override
-    public void getMovieListFromDB(final OnFinishedListener onFinishedListener, final int tabNumber, final Context mContext, MovieListFragment movieListFragment) {
-
-        new LoadDBManager(mContext, movieListFragment, onFinishedListener, tabNumber);
-
-    }
-
-    public Call<MovieListResponse> getMovieListResponseCall(int pageNo, String query, int tabNumber, ApiInterface apiService) {
+    public static Call<MovieListResponse> getMovieListResponseCall(int pageNo, String query, int tabNumber, ApiInterface apiService) {
         Call<MovieListResponse> call = null;
         switch (tabNumber) {
             case PLAYING_NOW:
@@ -77,15 +57,29 @@ public class MovieListModel implements MovieListContract.Model {
         return call;
     }
 
-    private class getMoviesTask extends AsyncTask<Void, Void, Call<MovieListResponse>> {
+    @Override
+    public void getMovieListFromDB(final OnFinishedListener onFinishedListener, final int tabNumber, final Context mContext, MovieListFragment movieListFragment) {
+
+        new LoadDBManager(mContext, movieListFragment, onFinishedListener, tabNumber);
+
+    }
+
+    @Override
+    public void getMovieList(OnFinishedListener onFinishedListener, String query, int pageNo, int tabNumber) {
+
+        apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+        MovieListModel.onFinishedListener = onFinishedListener;
+        MovieListModel.query = query;
+        MovieListModel.pageNo = pageNo;
+        MovieListModel.tabNumber = tabNumber;
+        new getMoviesTask().execute();
+    }
+
+    private static class getMoviesTask extends AsyncTask<Void, Void, Call<MovieListResponse>> {
         @Override
         protected Call<MovieListResponse> doInBackground(Void... voids) {
             return getMovieListResponseCall(pageNo, query, tabNumber, apiService);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
         }
 
         @Override
