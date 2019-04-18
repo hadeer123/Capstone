@@ -1,4 +1,4 @@
-# Capstone
+# Capstone - Search Movies
 ### Rubric
 
 #### Common Project Requirements
