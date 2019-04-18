@@ -1,4 +1,11 @@
 # Capstone - Search Movies
+
+### Features : 
+
+* Lists popular movies
+* Lists Top Rated movies
+* Saves favorite movies in a list 
+
 ### Rubric
 
 #### Common Project Requirements
